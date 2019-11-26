@@ -7,21 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8AA4A6DC238C99DD0017433F /* PlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA4A6DB238C99DD0017433F /* PlayerController.swift */; };
 		8AD622D4238C523B00586953 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD622D3238C523B00586953 /* AppDelegate.swift */; };
-		8AD622D6238C523B00586953 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD622D5238C523B00586953 /* ViewController.swift */; };
 		8AD622D9238C523B00586953 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8AD622D7238C523B00586953 /* Main.storyboard */; };
 		8AD622DB238C523F00586953 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8AD622DA238C523F00586953 /* Assets.xcassets */; };
 		8AD622DE238C523F00586953 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8AD622DC238C523F00586953 /* LaunchScreen.storyboard */; };
+		8AD622E6238C543200586953 /* VideoListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD622E5238C543200586953 /* VideoListController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8AA4A6DB238C99DD0017433F /* PlayerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerController.swift; sourceTree = "<group>"; };
 		8AD622D0238C523B00586953 /* Anime4K-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Anime4K-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8AD622D3238C523B00586953 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		8AD622D5238C523B00586953 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		8AD622D8238C523B00586953 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8AD622DA238C523F00586953 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8AD622DD238C523F00586953 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8AD622DF238C523F00586953 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8AD622E5238C543200586953 /* VideoListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoListController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,11 +57,12 @@
 			isa = PBXGroup;
 			children = (
 				8AD622D3238C523B00586953 /* AppDelegate.swift */,
-				8AD622D5238C523B00586953 /* ViewController.swift */,
 				8AD622D7238C523B00586953 /* Main.storyboard */,
 				8AD622DA238C523F00586953 /* Assets.xcassets */,
 				8AD622DC238C523F00586953 /* LaunchScreen.storyboard */,
 				8AD622DF238C523F00586953 /* Info.plist */,
+				8AD622E5238C543200586953 /* VideoListController.swift */,
+				8AA4A6DB238C99DD0017433F /* PlayerController.swift */,
 			);
 			path = "Anime4K-tvOS";
 			sourceTree = "<group>";
@@ -135,8 +138,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8AD622D6238C523B00586953 /* ViewController.swift in Sources */,
 				8AD622D4238C523B00586953 /* AppDelegate.swift in Sources */,
+				8AD622E6238C543200586953 /* VideoListController.swift in Sources */,
+				8AA4A6DC238C99DD0017433F /* PlayerController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -279,7 +283,6 @@
 		8AD622E3238C523F00586953 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 34A2STWT5M;
 				INFOPLIST_FILE = "Anime4K-tvOS/Info.plist";
@@ -297,7 +300,6 @@
 		8AD622E4238C523F00586953 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 34A2STWT5M;
 				INFOPLIST_FILE = "Anime4K-tvOS/Info.plist";
