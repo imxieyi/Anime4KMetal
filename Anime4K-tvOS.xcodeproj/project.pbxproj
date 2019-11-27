@@ -10,6 +10,7 @@
 		8A6782F5238DD8C900E4F99F /* Anime4K.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6782F4238DD8C900E4F99F /* Anime4K.swift */; };
 		8A6782F7238DDF3C00E4F99F /* Anime4K_Adaptive_v1.0RC2.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8A6782F6238DDF3C00E4F99F /* Anime4K_Adaptive_v1.0RC2.metal */; };
 		8AA4A6DC238C99DD0017433F /* PlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA4A6DB238C99DD0017433F /* PlayerController.swift */; };
+		8AB4868D238F1E8700CDC9F7 /* Average.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB4868C238F1E8700CDC9F7 /* Average.swift */; };
 		8AD622D4238C523B00586953 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD622D3238C523B00586953 /* AppDelegate.swift */; };
 		8AD622D9238C523B00586953 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8AD622D7238C523B00586953 /* Main.storyboard */; };
 		8AD622DB238C523F00586953 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8AD622DA238C523F00586953 /* Assets.xcassets */; };
@@ -21,6 +22,7 @@
 		8A6782F4238DD8C900E4F99F /* Anime4K.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Anime4K.swift; sourceTree = "<group>"; };
 		8A6782F6238DDF3C00E4F99F /* Anime4K_Adaptive_v1.0RC2.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Anime4K_Adaptive_v1.0RC2.metal; sourceTree = "<group>"; };
 		8AA4A6DB238C99DD0017433F /* PlayerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerController.swift; sourceTree = "<group>"; };
+		8AB4868C238F1E8700CDC9F7 /* Average.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Average.swift; sourceTree = "<group>"; };
 		8AD622D0238C523B00586953 /* Anime4K-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Anime4K-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8AD622D3238C523B00586953 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8AD622D8238C523B00586953 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -44,7 +46,6 @@
 		8AD622C7238C523B00586953 = {
 			isa = PBXGroup;
 			children = (
-				8A6782F6238DDF3C00E4F99F /* Anime4K_Adaptive_v1.0RC2.metal */,
 				8AD622D2238C523B00586953 /* Anime4K-tvOS */,
 				8AD622D1238C523B00586953 /* Products */,
 			);
@@ -68,7 +69,9 @@
 				8AD622DF238C523F00586953 /* Info.plist */,
 				8AD622E5238C543200586953 /* VideoListController.swift */,
 				8AA4A6DB238C99DD0017433F /* PlayerController.swift */,
+				8A6782F6238DDF3C00E4F99F /* Anime4K_Adaptive_v1.0RC2.metal */,
 				8A6782F4238DD8C900E4F99F /* Anime4K.swift */,
+				8AB4868C238F1E8700CDC9F7 /* Average.swift */,
 			);
 			path = "Anime4K-tvOS";
 			sourceTree = "<group>";
@@ -147,6 +150,7 @@
 				8A6782F7238DDF3C00E4F99F /* Anime4K_Adaptive_v1.0RC2.metal in Sources */,
 				8AD622D4238C523B00586953 /* AppDelegate.swift in Sources */,
 				8A6782F5238DD8C900E4F99F /* Anime4K.swift in Sources */,
+				8AB4868D238F1E8700CDC9F7 /* Average.swift in Sources */,
 				8AD622E6238C543200586953 /* VideoListController.swift in Sources */,
 				8AA4A6DC238C99DD0017433F /* PlayerController.swift in Sources */,
 			);

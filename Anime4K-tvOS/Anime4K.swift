@@ -12,29 +12,74 @@ import MetalKit
 
 open class Anime4K {
     
-    let device: MTLDevice!
-    let library: MTLLibrary!
+    let device: MTLDevice
+    let library: MTLLibrary
+    
+    let luminanceFunc: MTLFunction
+    var lumaFunc: MTLFunction!
+    var computeGaussianXFunc: MTLFunction!
+    var computeGaussianYFunc: MTLFunction!
+    var lineDetectFunc: MTLFunction!
+    var computeLineGaussianXFunc: MTLFunction!
+    var computeLineGaussianYFunc: MTLFunction!
+    var computeGradientXFunc: MTLFunction!
+    var computeGradientYFunc: MTLFunction!
+    var thinLinesFunc: MTLFunction!
+    var refineFunc: MTLFunction!
+    var postFXAAFunc: MTLFunction!
+
+    let samplerState: MTLSamplerState
+    
+    var constants: MTLFunctionConstantValues!
+    var scaledTextureDescriptor: MTLTextureDescriptor!
+    var lumTextureDescriptor: MTLTextureDescriptor!
+    var outTextureDescriptor: MTLTextureDescriptor!
     
     public init(device: MTLDevice) throws {
         self.device = device
         library = try device.makeDefaultLibrary(bundle: Bundle(for: type(of: self)))
+        samplerState = Anime4K.makeSamplerState(device: device)
+        luminanceFunc = library.makeFunction(name: "Luminance")!
     }
     
-    private func bicubic(cmdBuffer: MTLCommandBuffer, constants: MTLFunctionConstantValues, inTex: MTLTexture, outTex: MTLTexture) {
-        let encoder = cmdBuffer.makeComputeCommandEncoder()!
-        let bicubicFunc = try! library.makeFunction(name: "BicubicMain", constantValues: constants)
-        let pipelineState = try! device.makeComputePipelineState(function: bicubicFunc)
-        encoder.setComputePipelineState(pipelineState)
-        encoder.setTexture(inTex, index: 0)
-        encoder.setTexture(outTex, index: 1)
-        let threadGroupCount = MTLSize(width: 1, height: 1, depth: 1)
-        let threadGroups = MTLSize(width: outTex.width / threadGroupCount.width, height: outTex.height / threadGroupCount.height, depth: 1)
-        encoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadGroupCount)
-        encoder.endEncoding()
+    open func updateResolution(inW: Int, inH: Int, outW: Int, outH: Int) {
+        // Scaled texture
+        scaledTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: MTLPixelFormat.rgba8Unorm, width: outW, height: outH, mipmapped: false)
+        scaledTextureDescriptor.usage = MTLTextureUsage(rawValue: MTLTextureUsage.shaderWrite.rawValue | MTLTextureUsage.shaderRead.rawValue)
+        scaledTextureDescriptor.storageMode = .private
+        // Luminance texture
+        lumTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rg16Float, width: inW, height: inH, mipmapped: false)
+        lumTextureDescriptor.usage = MTLTextureUsage(rawValue: MTLTextureUsage.shaderWrite.rawValue | MTLTextureUsage.shaderRead.rawValue)
+        lumTextureDescriptor.storageMode = .private
+        // Output texture
+        outTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: MTLPixelFormat.rgba8Unorm, width: outW, height: outH, mipmapped: false)
+        outTextureDescriptor.usage = .shaderWrite
+        outTextureDescriptor.storageMode = .shared
+        // Set constants
+        var in_w = Float(inW)
+        var in_h = Float(inH)
+        var out_w = Float(outW)
+        var out_h = Float(outH)
+        constants = MTLFunctionConstantValues()
+        constants.setConstantValue(&in_w,   type: MTLDataType.float, index: 0)
+        constants.setConstantValue(&in_h,  type: MTLDataType.float,  index: 1)
+        constants.setConstantValue(&out_w,  type: MTLDataType.float,  index: 2)
+        constants.setConstantValue(&out_h, type: MTLDataType.float,  index: 3)
+        lumaFunc = try! library.makeFunction(name: "Luma", constantValues: constants)
+        computeGaussianXFunc = try! library.makeFunction(name: "ComputeGaussianX", constantValues: constants)
+        computeGaussianYFunc = try! library.makeFunction(name: "ComputeGaussianY", constantValues: constants)
+        lineDetectFunc = try! library.makeFunction(name: "LineDetect", constantValues: constants)
+        computeLineGaussianXFunc = try! library.makeFunction(name: "ComputeLineGaussianX", constantValues: constants)
+        computeLineGaussianYFunc = try! library.makeFunction(name: "ComputeLineGaussianY", constantValues: constants)
+        computeGradientXFunc = try! library.makeFunction(name: "ComputeGradientX", constantValues: constants)
+        computeGradientYFunc = try! library.makeFunction(name: "ComputeGradientY", constantValues: constants)
+        thinLinesFunc = try! library.makeFunction(name: "ThinLines", constantValues: constants)
+        refineFunc = try! library.makeFunction(name: "Refine", constantValues: constants)
+        postFXAAFunc = try! library.makeFunction(name: "PostFXAA", constantValues: constants)
     }
 
     // Normalized sampler
-    private func makeSamplerState() -> MTLSamplerState {
+    private static func makeSamplerState(device: MTLDevice) -> MTLSamplerState {
         let sampler = MTLSamplerDescriptor()
         sampler.minFilter = .linear
         sampler.magFilter = .linear
@@ -51,12 +96,11 @@ open class Anime4K {
     
     private func luminance(cmdBuffer: MTLCommandBuffer, rgb: MTLTexture, luma: MTLTexture) {
         let encoder = cmdBuffer.makeComputeCommandEncoder()!
-        let luminanceFunc = library.makeFunction(name: "Luminance")!
         let pipelineState = try! device.makeComputePipelineState(function: luminanceFunc)
         encoder.setComputePipelineState(pipelineState)
         encoder.setTexture(rgb, index: 0)
         encoder.setTexture(luma, index: 1)
-        let threadGroupCount = MTLSize(width: 1, height: 1, depth: 1)
+        let threadGroupCount = MTLSize(width: 20, height: 20, depth: 1)
         let threadGroups = MTLSize(width: luma.width / threadGroupCount.width, height: luma.height / threadGroupCount.height, depth: 1)
         encoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadGroupCount)
         encoder.endEncoding()
@@ -64,13 +108,12 @@ open class Anime4K {
     
     private func luma(cmdBuffer: MTLCommandBuffer, constants: MTLFunctionConstantValues, hooked: MTLTexture, lumax: MTLTexture) {
         let encoder = cmdBuffer.makeComputeCommandEncoder()!
-        let lumaFunc = try! library.makeFunction(name: "Luma", constantValues: constants)
         let pipelineState = try! device.makeComputePipelineState(function: lumaFunc)
         encoder.setComputePipelineState(pipelineState)
-        encoder.setSamplerState(makeSamplerState(), index: 0)
+        encoder.setSamplerState(samplerState, index: 0)
         encoder.setTexture(hooked, index: 0)
         encoder.setTexture(lumax, index: 1)
-        let threadGroupCount = MTLSize(width: 1, height: 1, depth: 1)
+        let threadGroupCount = MTLSize(width: 20, height: 20, depth: 1)
         let threadGroups = MTLSize(width: lumax.width / threadGroupCount.width, height: lumax.height / threadGroupCount.height, depth: 1)
         encoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadGroupCount)
         encoder.endEncoding()
@@ -78,13 +121,12 @@ open class Anime4K {
     
     private func computeGaussianX(cmdBuffer: MTLCommandBuffer, constants: MTLFunctionConstantValues, luma: MTLTexture, lumag: MTLTexture) {
         let encoder = cmdBuffer.makeComputeCommandEncoder()!
-        let computeGaussianXFunc = try! library.makeFunction(name: "ComputeGaussianX", constantValues: constants)
         let pipelineState = try! device.makeComputePipelineState(function: computeGaussianXFunc)
         encoder.setComputePipelineState(pipelineState)
-        encoder.setSamplerState(makeSamplerState(), index: 0)
+        encoder.setSamplerState(samplerState, index: 0)
         encoder.setTexture(luma, index: 0)
         encoder.setTexture(lumag, index: 1)
-        let threadGroupCount = MTLSize(width: 1, height: 1, depth: 1)
+        let threadGroupCount = MTLSize(width: 20, height: 20, depth: 1)
         let threadGroups = MTLSize(width: lumag.width / threadGroupCount.width, height: lumag.height / threadGroupCount.height, depth: 1)
         encoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadGroupCount)
         encoder.endEncoding()
@@ -92,13 +134,12 @@ open class Anime4K {
     
     private func computeGaussianY(cmdBuffer: MTLCommandBuffer, constants: MTLFunctionConstantValues, lumag: MTLTexture, lumagg: MTLTexture) {
         let encoder = cmdBuffer.makeComputeCommandEncoder()!
-        let computeGaussianYFunc = try! library.makeFunction(name: "ComputeGaussianY", constantValues: constants)
         let pipelineState = try! device.makeComputePipelineState(function: computeGaussianYFunc)
         encoder.setComputePipelineState(pipelineState)
-        encoder.setSamplerState(makeSamplerState(), index: 0)
+        encoder.setSamplerState(samplerState, index: 0)
         encoder.setTexture(lumag, index: 0)
         encoder.setTexture(lumagg, index: 1)
-        let threadGroupCount = MTLSize(width: 1, height: 1, depth: 1)
+        let threadGroupCount = MTLSize(width: 20, height: 20, depth: 1)
         let threadGroups = MTLSize(width: lumagg.width / threadGroupCount.width, height: lumagg.height / threadGroupCount.height, depth: 1)
         encoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadGroupCount)
         encoder.endEncoding()
@@ -106,14 +147,13 @@ open class Anime4K {
     
     private func lineDetect(cmdBuffer: MTLCommandBuffer, constants: MTLFunctionConstantValues, luma: MTLTexture, lumag: MTLTexture, lumagg: MTLTexture) {
         let encoder = cmdBuffer.makeComputeCommandEncoder()!
-        let lineDetectFunc = try! library.makeFunction(name: "LineDetect", constantValues: constants)
         let pipelineState = try! device.makeComputePipelineState(function: lineDetectFunc)
         encoder.setComputePipelineState(pipelineState)
-        encoder.setSamplerState(makeSamplerState(), index: 0)
+        encoder.setSamplerState(samplerState, index: 0)
         encoder.setTexture(luma, index: 0)
         encoder.setTexture(lumag, index: 1)
         encoder.setTexture(lumagg, index: 2)
-        let threadGroupCount = MTLSize(width: 1, height: 1, depth: 1)
+        let threadGroupCount = MTLSize(width: 20, height: 20, depth: 1)
         let threadGroups = MTLSize(width: lumagg.width / threadGroupCount.width, height: lumagg.height / threadGroupCount.height, depth: 1)
         encoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadGroupCount)
         encoder.endEncoding()
@@ -121,13 +161,12 @@ open class Anime4K {
     
     private func computeLineGaussianX(cmdBuffer: MTLCommandBuffer, constants: MTLFunctionConstantValues, lumag: MTLTexture, lumagg: MTLTexture) {
         let encoder = cmdBuffer.makeComputeCommandEncoder()!
-        let computeLineGaussianXFunc = try! library.makeFunction(name: "ComputeLineGaussianX", constantValues: constants)
         let pipelineState = try! device.makeComputePipelineState(function: computeLineGaussianXFunc)
         encoder.setComputePipelineState(pipelineState)
-        encoder.setSamplerState(makeSamplerState(), index: 0)
+        encoder.setSamplerState(samplerState, index: 0)
         encoder.setTexture(lumag, index: 0)
         encoder.setTexture(lumagg, index: 1)
-        let threadGroupCount = MTLSize(width: 1, height: 1, depth: 1)
+        let threadGroupCount = MTLSize(width: 20, height: 20, depth: 1)
         let threadGroups = MTLSize(width: lumagg.width / threadGroupCount.width, height: lumagg.height / threadGroupCount.height, depth: 1)
         encoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadGroupCount)
         encoder.endEncoding()
@@ -135,13 +174,12 @@ open class Anime4K {
     
     private func computeLineGaussianY(cmdBuffer: MTLCommandBuffer, constants: MTLFunctionConstantValues, lumag: MTLTexture, lumagg: MTLTexture) {
         let encoder = cmdBuffer.makeComputeCommandEncoder()!
-        let computeLineGaussianYFunc = try! library.makeFunction(name: "ComputeLineGaussianY", constantValues: constants)
         let pipelineState = try! device.makeComputePipelineState(function: computeLineGaussianYFunc)
         encoder.setComputePipelineState(pipelineState)
-        encoder.setSamplerState(makeSamplerState(), index: 0)
+        encoder.setSamplerState(samplerState, index: 0)
         encoder.setTexture(lumag, index: 0)
         encoder.setTexture(lumagg, index: 1)
-        let threadGroupCount = MTLSize(width: 1, height: 1, depth: 1)
+        let threadGroupCount = MTLSize(width: 20, height: 20, depth: 1)
         let threadGroups = MTLSize(width: lumagg.width / threadGroupCount.width, height: lumagg.height / threadGroupCount.height, depth: 1)
         encoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadGroupCount)
         encoder.endEncoding()
@@ -149,13 +187,12 @@ open class Anime4K {
     
     private func computeGradientX(cmdBuffer: MTLCommandBuffer, constants: MTLFunctionConstantValues, luma: MTLTexture, lumad: MTLTexture) {
         let encoder = cmdBuffer.makeComputeCommandEncoder()!
-        let computeGradientXFunc = try! library.makeFunction(name: "ComputeGradientX", constantValues: constants)
         let pipelineState = try! device.makeComputePipelineState(function: computeGradientXFunc)
         encoder.setComputePipelineState(pipelineState)
-        encoder.setSamplerState(makeSamplerState(), index: 0)
+        encoder.setSamplerState(samplerState, index: 0)
         encoder.setTexture(luma, index: 0)
         encoder.setTexture(lumad, index: 1)
-        let threadGroupCount = MTLSize(width: 1, height: 1, depth: 1)
+        let threadGroupCount = MTLSize(width: 20, height: 20, depth: 1)
         let threadGroups = MTLSize(width: lumad.width / threadGroupCount.width, height: lumad.height / threadGroupCount.height, depth: 1)
         encoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadGroupCount)
         encoder.endEncoding()
@@ -163,13 +200,12 @@ open class Anime4K {
     
     private func computeGradientY(cmdBuffer: MTLCommandBuffer, constants: MTLFunctionConstantValues, lumad: MTLTexture, lumadd: MTLTexture) {
         let encoder = cmdBuffer.makeComputeCommandEncoder()!
-        let computeGradientYFunc = try! library.makeFunction(name: "ComputeGradientY", constantValues: constants)
         let pipelineState = try! device.makeComputePipelineState(function: computeGradientYFunc)
         encoder.setComputePipelineState(pipelineState)
-        encoder.setSamplerState(makeSamplerState(), index: 0)
+        encoder.setSamplerState(samplerState, index: 0)
         encoder.setTexture(lumad, index: 0)
         encoder.setTexture(lumadd, index: 1)
-        let threadGroupCount = MTLSize(width: 1, height: 1, depth: 1)
+        let threadGroupCount = MTLSize(width: 20, height: 20, depth: 1)
         let threadGroups = MTLSize(width: lumadd.width / threadGroupCount.width, height: lumadd.height / threadGroupCount.height, depth: 1)
         encoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadGroupCount)
         encoder.endEncoding()
@@ -177,15 +213,14 @@ open class Anime4K {
     
     private func thinLines(cmdBuffer: MTLCommandBuffer, constants: MTLFunctionConstantValues, hooked: MTLTexture, luma: MTLTexture, lumag: MTLTexture, scaled: MTLTexture) {
         let encoder = cmdBuffer.makeComputeCommandEncoder()!
-        let thinLinesFunc = try! library.makeFunction(name: "ThinLines", constantValues: constants)
         let pipelineState = try! device.makeComputePipelineState(function: thinLinesFunc)
         encoder.setComputePipelineState(pipelineState)
-        encoder.setSamplerState(makeSamplerState(), index: 0)
+        encoder.setSamplerState(samplerState, index: 0)
         encoder.setTexture(hooked, index: 0)
         encoder.setTexture(luma, index: 1)
         encoder.setTexture(lumag, index: 2)
         encoder.setTexture(scaled, index: 3)
-        let threadGroupCount = MTLSize(width: 1, height: 1, depth: 1)
+        let threadGroupCount = MTLSize(width: 20, height: 20, depth: 1)
         let threadGroups = MTLSize(width: scaled.width / threadGroupCount.width, height: scaled.height / threadGroupCount.height, depth: 1)
         encoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadGroupCount)
         encoder.endEncoding()
@@ -193,16 +228,15 @@ open class Anime4K {
     
     private func refine(cmdBuffer: MTLCommandBuffer, constants: MTLFunctionConstantValues, hooked: MTLTexture, luma: MTLTexture, lumag: MTLTexture, lumad: MTLTexture, scaled: MTLTexture) {
         let encoder = cmdBuffer.makeComputeCommandEncoder()!
-        let refineFunc = try! library.makeFunction(name: "Refine", constantValues: constants)
         let pipelineState = try! device.makeComputePipelineState(function: refineFunc)
         encoder.setComputePipelineState(pipelineState)
-        encoder.setSamplerState(makeSamplerState(), index: 0)
+        encoder.setSamplerState(samplerState, index: 0)
         encoder.setTexture(hooked, index: 0)
         encoder.setTexture(luma, index: 1)
         encoder.setTexture(lumag, index: 2)
         encoder.setTexture(lumad, index: 3)
         encoder.setTexture(scaled, index: 4)
-        let threadGroupCount = MTLSize(width: 1, height: 1, depth: 1)
+        let threadGroupCount = MTLSize(width: 20, height: 20, depth: 1)
         let threadGroups = MTLSize(width: scaled.width / threadGroupCount.width, height: scaled.height / threadGroupCount.height, depth: 1)
         encoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadGroupCount)
         encoder.endEncoding()
@@ -210,48 +244,19 @@ open class Anime4K {
     
     private func postFXAA(cmdBuffer: MTLCommandBuffer, constants: MTLFunctionConstantValues, hooked: MTLTexture, lumag: MTLTexture, scaled: MTLTexture) {
         let encoder = cmdBuffer.makeComputeCommandEncoder()!
-        let postFXAAFunc = try! library.makeFunction(name: "PostFXAA", constantValues: constants)
         let pipelineState = try! device.makeComputePipelineState(function: postFXAAFunc)
         encoder.setComputePipelineState(pipelineState)
-        encoder.setSamplerState(makeSamplerState(), index: 0)
+        encoder.setSamplerState(samplerState, index: 0)
         encoder.setTexture(hooked, index: 0)
         encoder.setTexture(lumag, index: 1)
         encoder.setTexture(scaled, index: 2)
-        let threadGroupCount = MTLSize(width: 1, height: 1, depth: 1)
+        let threadGroupCount = MTLSize(width: 20, height: 20, depth: 1)
         let threadGroups = MTLSize(width: scaled.width / threadGroupCount.width, height: scaled.height / threadGroupCount.height, depth: 1)
         encoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadGroupCount)
         encoder.endEncoding()
     }
     
     open func encode(commandBuffer: MTLCommandBuffer, inputSize: CGSize, outputSize: CGSize, textureIn: MTLTexture, textureOut: MTLTexture) {
-        let inW = Int(inputSize.width)
-        let inH = Int(inputSize.height)
-        let outW = Int(outputSize.width)
-        let outH = Int(outputSize.height)
-        // Scaled texture
-        let scaledTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: MTLPixelFormat.rgba8Unorm, width: outW, height: outH, mipmapped: false)
-        scaledTextureDescriptor.usage = MTLTextureUsage(rawValue: MTLTextureUsage.shaderWrite.rawValue | MTLTextureUsage.shaderRead.rawValue)
-        scaledTextureDescriptor.storageMode = .private
-        // Luminance texture
-        let lumTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rg16Float, width: inW, height: inH, mipmapped: false)
-        lumTextureDescriptor.usage = MTLTextureUsage(rawValue: MTLTextureUsage.shaderWrite.rawValue | MTLTextureUsage.shaderRead.rawValue)
-        lumTextureDescriptor.storageMode = .private
-        // Output texture
-        let outTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: MTLPixelFormat.rgba8Unorm, width: outW, height: outH, mipmapped: false)
-        outTextureDescriptor.usage = .shaderWrite
-        outTextureDescriptor.storageMode = .shared
-        // Set constants
-        var in_w = Float(inW)
-        var in_h = Float(inH)
-        var out_w = Float(outW)
-        var out_h = Float(outH)
-        let constants = MTLFunctionConstantValues()
-        constants.setConstantValue(&in_w,   type: MTLDataType.float, index: 0)
-        constants.setConstantValue(&in_h,  type: MTLDataType.float,  index: 1)
-        constants.setConstantValue(&out_w,  type: MTLDataType.float,  index: 2)
-        constants.setConstantValue(&out_h, type: MTLDataType.float,  index: 3)
-        
-        // Start encoding
         // Luminance
         let luma = device.makeTexture(descriptor: lumTextureDescriptor)!
         luminance(cmdBuffer: commandBuffer, rgb: textureIn, luma: luma)
@@ -284,7 +289,6 @@ open class Anime4K {
         refine(cmdBuffer: commandBuffer, constants: constants, hooked: scaledTL, luma: luma, lumag: lumaGLY, lumad: lumaDY, scaled: scaledR)
         // PostFXAA
         postFXAA(cmdBuffer: commandBuffer, constants: constants, hooked: scaledR, lumag: lumaGLY, scaled: textureOut)
-        // End encoding
     }
     
 }

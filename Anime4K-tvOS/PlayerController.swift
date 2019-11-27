@@ -27,6 +27,9 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
     
     private var anime4K: Anime4K!
     
+    private var inW: Int = 0
+    private var inH: Int = 0
+    
     var videoUrl: URL?
     
     lazy var videoOutput = { () -> AVPlayerItemVideoOutput in
@@ -74,6 +77,7 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
         perfBanner = UILabel(frame: CGRect(x: 0, y: view.frame.height - 32, width: view.frame.width, height: 32))
         view.insertSubview(perfBanner, at: 1)
         perfBanner.backgroundColor = .black
+        perfBanner.textColor = .white
         perfBanner.alpha = 0.5
         perfBanner.textAlignment = .left
         perfBanner.font = .monospacedSystemFont(ofSize: 24, weight: .regular)
@@ -112,7 +116,12 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
         }
     }
     
+    let fpsAverage = Average(count: 10)
+    let cpuOverheadAverage = Average(count: 10)
+    let gpuTimeAverage = Average(count: 10)
+    
     private func render(in view: MTKView) {
+        let startRenderTime = CACurrentMediaTime()
         guard let pixelBuffer = self.pixelBuffer else {
             return
         }
@@ -133,18 +142,34 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
         guard let commandBuffer = commandQueue.makeCommandBuffer() else {
             return
         }
-        let inputSize = CGSize(width: inW, height: inH)
+        
         let outW = view.frame.width * UIScreen.main.scale
         let outH = view.frame.height * UIScreen.main.scale
+        
+        let inputSize = CGSize(width: inW, height: inH)
         let outputSize = CGSize(width: outW, height: outH)
+        
+        if self.inW != inW || self.inH != inH {
+            self.inW = inW
+            self.inH = inH
+            anime4K.updateResolution(inW: inW, inH: inH, outW: Int(outW), outH: Int(outH))
+        }
+        
         anime4K.encode(commandBuffer: commandBuffer, inputSize: inputSize, outputSize: outputSize, textureIn: textureIn, textureOut: drawable.texture)
         commandBuffer.present(drawable)
+        let endEncodeTime = CACurrentMediaTime()
+        var scheduleTime: Double = 0
+        commandBuffer.addScheduledHandler { _ in
+            scheduleTime = CACurrentMediaTime()
+        }
         commandBuffer.addCompletedHandler { _ in
             DispatchQueue.main.async {
                 let currentTime = CACurrentMediaTime()
                 if self.lastFrameTime != 0 {
                     let fps = 1.0 / (currentTime - self.lastFrameTime)
-                    self.perfBanner.text = String(format: "FPS: %02.2f   Input: %dx%d   Output: %dx%d", fps, inW, inH, Int(outW), Int(outH))
+                    let overhead = endEncodeTime - startRenderTime
+                    let frameTime = currentTime - scheduleTime
+                    self.perfBanner.text = String(format: "FPS: %02.2f   Overhead: %02.1fms   GPU Time: %02.1fms   Input: %dx%d   Output: %dx%d", self.fpsAverage.update(fps), self.cpuOverheadAverage.update(overhead * 1000), self.gpuTimeAverage.update(frameTime * 1000), inW, inH, Int(outW), Int(outH))
                 }
                 self.lastFrameTime = currentTime
             }
