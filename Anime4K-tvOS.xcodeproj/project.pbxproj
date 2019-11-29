@@ -19,6 +19,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8A39A6F42391AEA4006368A9 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		8A39A6F62391AEC1006368A9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		8A6782F4238DD8C900E4F99F /* Anime4K.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Anime4K.swift; sourceTree = "<group>"; };
 		8A6782F6238DDF3C00E4F99F /* Anime4K_Adaptive_v1.0RC2.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Anime4K_Adaptive_v1.0RC2.metal; sourceTree = "<group>"; };
 		8AA4A6DB238C99DD0017433F /* PlayerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerController.swift; sourceTree = "<group>"; };
@@ -46,6 +48,8 @@
 		8AD622C7238C523B00586953 = {
 			isa = PBXGroup;
 			children = (
+				8A39A6F62391AEC1006368A9 /* README.md */,
+				8A39A6F42391AEA4006368A9 /* LICENSE */,
 				8AD622D2238C523B00586953 /* Anime4K-tvOS */,
 				8AD622D1238C523B00586953 /* Products */,
 			);
@@ -306,6 +310,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 13.0;
 			};
 			name = Debug;
 		};
@@ -323,6 +328,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 13.0;
 			};
 			name = Release;
 		};
