@@ -17,6 +17,13 @@ On [Apple TV 4K](https://en.wikipedia.org/wiki/Apple_TV#5th_generation_(4K)) (A1
 *Note: The above footage is only for demo purpose.
 
 ## How to use
+
+### Option 1: Play from URL
+
+Click the cell under `Input URL`. Input URL (`http://xxx`). Then click `done`. The video should be played automatically.
+
+### Option 2: Play from local file
+
 Currently it can only play mp4 files in `Caches` directory.
 
 To transfer video files for playing, you should follow the following steps:
