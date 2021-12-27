@@ -1,38 +1,95 @@
-#  Anime4K for tvOS
+# Anime4KMetal
 
 ## Introduction
-This is a port of GLSL [Anime4K](https://github.com/bloc97/Anime4K) to tvOS (Metal).
+
+This is a port of [Anime4K](https://github.com/bloc97/Anime4K) to Metal. It dynamically translates GLSL shaders to Metal shaders and applies them during video playback. All shaders from the Anime4K project should work regardless of performance.
 
 ## Requirements
-- Apple TV 4K
-- Xcode 11.0+
-- tvOS 13.0+
+- Xcode 13.0+
+- iOS 15.0+
+- macOS 12.0+ (via Mac Catalyst)
+- tvOS 15.0+
 
-## Performance
-On [Apple TV 4K](https://en.wikipedia.org/wiki/Apple_TV#5th_generation_(4K)) (A10X), each frame takes about 30ms to render when scaling 1080p to 4K. (Using [Anime4K_Adaptive_v1.0RC2](https://github.com/bloc97/Anime4K/blob/master/glsl/Anime4K_Adaptive_v1.0RC2.glsl) shader) Most animes are 24 fps, which can be rendered in real time.
+## Pre-built binaries
 
-## Screenshot
-![](assets/app-screenshot.png)
+Download in [Releases](https://github.com/imxieyi/Anime4KMetal/releases).
 
-*Note: The above footage is only for demo purpose.
+## Screenshots
+
+### macOS
+
+![](assets/main_macos.png)
+
+### tvOS
+
+![](assets/main_tvos.png)
+
+### [Anime4K_Restore_CNN_M.glsl](https://github.com/bloc97/Anime4K/blob/master/glsl/Restore/Anime4K_Restore_CNN_M.glsl) on M1 Mac
+
+![](assets/Anime4K_Restore_CNN_M_m1.png)
+
+### [Anime4K_Restore_GAN_UUL.glsl](https://github.com/bloc97/Anime4K/blob/master/glsl/Restore/Anime4K_Restore_GAN_UUL.glsl) on 5700XT
+
+![](assets/Anime4K_Restore_GAN_UUL_5700xt.png)
+
+### [Anime4K_Deblur_DoG.glsl](https://github.com/bloc97/Anime4K/blob/master/glsl/Deblur/Anime4K_Deblur_DoG.glsl) on Apple TV 4K (A10X)
+
+![](assets/Anime4K_Deblur_DoG_a10x_tv.png)
+
+### Original image
+
+![](assets/original.png)
+
+*Note: The above footages are only for demo purpose.
 
 ## How to use
 
-### Option 1: Play from URL
+Only mp4 files with yuv420 pixel format are supported by the built-in decoder. Other formats must be converted to the supported format.
 
-Click the cell under `Input URL`. Input URL (`http://xxx`). Then click `done`. The video should be played automatically.
+### Pick shader
 
-### Option 2: Play from local file
+Pick the desired shader under `Shader selection` section. Not all shaders will run well on all devices. If you see obvious dropped frames please use a smaller shader instead. Large shaders will take longer time to convert and compile. In the meantime the app will appear not responsive.
 
-Currently it can only play mp4 files in `Caches` directory.
+On macOS it's recommended putting the app in fullscreen mode for the best experience.
 
-To transfer video files for playing, you should follow the following steps:
+### Play from URL
 
-1. Connect your Apple TV 4K to Xcode via network.
-2. Compile and run this project.
-3. Download container from **Devices and Simulators**.
-![Download Container](assets/download-container.jpg)
-4. Open the `.xcappdata` package exported.
-5. Put video files into `AppData/Library/Caches`.  **Don't put under `Documents`. Even if you can do this, this directory is not accessible on tvOS.**
-6. Replace container using the last option in the screenshot above.
-7. Launch app and select the video you want to play using remote.
+On tvOS no local file can be accessed. You can start a HTTP server (for example nginx) on macOS and play from URL on tvOS.
+
+Click the cell `Input URL`. Input URL (`http://xxx`). Then click `done` and `Play`. The video should start playing
+
+### Play from file
+
+On iOS and macOS you can simply click `Select file` and pick a local file to play.
+
+## Building
+
+1. Clone this project:
+```bash
+git clone https://github.com/imxieyi/Anime4KMetal.git
+cd Anime4KMetal
+git submodule update --init
+```
+2. Open `Anime4KMetal.xcodeproj`.
+3. Select target and build.
+
+## Test shader converter
+
+To test the shader converter simply launch the XCTest suite on a target device.
+
+![](assets/xctest_shader.png)
+
+There are a ton of shader warnings due to unused variables. These messages can be ignored.
+
+## Known issues
+
+Due to how bilinear sampler works the output image is not subpixel aligned with the original image.
+
+## License
+
+This project is licensed under Apache 2.0 license.
+
+## Credits
+
+- GLSL shaders are from [Anime4K](https://github.com/bloc97/Anime4K)
+- Shader converter referenced code from [mpv](https://github.com/mpv-player/mpv)

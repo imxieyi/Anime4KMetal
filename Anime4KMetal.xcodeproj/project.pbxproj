@@ -1,0 +1,748 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8A07C91127783E530023EC36 /* glsl in Resources */ = {isa = PBXBuildFile; fileRef = 8A07C91027783E530023EC36 /* glsl */; };
+		8A07C91327783E530023EC36 /* glsl in Resources */ = {isa = PBXBuildFile; fileRef = 8A07C91027783E530023EC36 /* glsl */; };
+		8A07C94427783FC10023EC36 /* MPVShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0DF6A127782E0400C09201 /* MPVShader.swift */; };
+		8A07C94527783FCD0023EC36 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8A0DF66227782DD700C09201 /* Assets.xcassets */; };
+		8A07C94627783FD40023EC36 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0DF66127782DD700C09201 /* ContentView.swift */; };
+		8A07C94727783FD60023EC36 /* Anime4KMetalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0DF66027782DD700C09201 /* Anime4KMetalApp.swift */; };
+		8A07C948277840160023EC36 /* MPVShaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0DF6A627782E4100C09201 /* MPVShaderTests.swift */; };
+		8A07C94C277842DA0023EC36 /* MPVShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0DF6A127782E0400C09201 /* MPVShader.swift */; };
+		8A07C94E277842DB0023EC36 /* MPVShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0DF6A127782E0400C09201 /* MPVShader.swift */; };
+		8A07C94F277843180023EC36 /* glsl in Resources */ = {isa = PBXBuildFile; fileRef = 8A07C91027783E530023EC36 /* glsl */; };
+		8A07C950277843190023EC36 /* glsl in Resources */ = {isa = PBXBuildFile; fileRef = 8A07C91027783E530023EC36 /* glsl */; };
+		8A07C95227784B9F0023EC36 /* PlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A07C95127784B9F0023EC36 /* PlayerController.swift */; };
+		8A07C95627784C2D0023EC36 /* PlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A07C95127784B9F0023EC36 /* PlayerController.swift */; };
+		8A07C95827784C680023EC36 /* Anime4K.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A07C95727784C680023EC36 /* Anime4K.swift */; };
+		8A07C95A27784C680023EC36 /* Anime4K.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A07C95727784C680023EC36 /* Anime4K.swift */; };
+		8A07C95C277854320023EC36 /* Anime4K.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A07C95727784C680023EC36 /* Anime4K.swift */; };
+		8A07C95D277854340023EC36 /* Anime4K.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A07C95727784C680023EC36 /* Anime4K.swift */; };
+		8A07C95F2778544C0023EC36 /* Average.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A07C95E2778544C0023EC36 /* Average.swift */; };
+		8A07C9602778544C0023EC36 /* Average.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A07C95E2778544C0023EC36 /* Average.swift */; };
+		8A07C9622778544C0023EC36 /* Average.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A07C95E2778544C0023EC36 /* Average.swift */; };
+		8A07C9642778544C0023EC36 /* Average.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A07C95E2778544C0023EC36 /* Average.swift */; };
+		8A07C9662778B2570023EC36 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A07C9652778B2570023EC36 /* PlayerView.swift */; };
+		8A07C9672778B2570023EC36 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A07C9652778B2570023EC36 /* PlayerView.swift */; };
+		8A0DF68827782DD700C09201 /* Anime4KMetalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0DF66027782DD700C09201 /* Anime4KMetalApp.swift */; };
+		8A0DF68A27782DD700C09201 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0DF66127782DD700C09201 /* ContentView.swift */; };
+		8A0DF68C27782DD700C09201 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8A0DF66227782DD700C09201 /* Assets.xcassets */; };
+		8A0DF6A227782E0500C09201 /* MPVShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0DF6A127782E0400C09201 /* MPVShader.swift */; };
+		8A0DF6AC27782E9300C09201 /* MPVShaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0DF6A627782E4100C09201 /* MPVShaderTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		8A07C93327783F880023EC36 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8A0DF65B27782DD700C09201 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8A07C91827783F870023EC36;
+			remoteInfo = Anime4KMetal;
+		};
+		8A0DF67527782DD700C09201 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8A0DF65B27782DD700C09201 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8A0DF66627782DD700C09201;
+			remoteInfo = "Anime4KMetal (iOS)";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		8A07C91027783E530023EC36 /* glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = glsl; path = Anime4K/glsl; sourceTree = SOURCE_ROOT; };
+		8A07C91927783F870023EC36 /* Anime4KMetal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Anime4KMetal.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A07C93227783F880023EC36 /* Tests tvOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests tvOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A07C95127784B9F0023EC36 /* PlayerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerController.swift; sourceTree = "<group>"; };
+		8A07C95727784C680023EC36 /* Anime4K.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Anime4K.swift; sourceTree = "<group>"; };
+		8A07C95E2778544C0023EC36 /* Average.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Average.swift; sourceTree = "<group>"; };
+		8A07C9652778B2570023EC36 /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		8A07C9722778BBBF0023EC36 /* Anime4KMetal--tvOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Anime4KMetal--tvOS--Info.plist"; sourceTree = "<group>"; };
+		8A07C9732778EC920023EC36 /* Anime4KMetal--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Anime4KMetal--iOS--Info.plist"; sourceTree = "<group>"; };
+		8A0DF66027782DD700C09201 /* Anime4KMetalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Anime4KMetalApp.swift; sourceTree = "<group>"; };
+		8A0DF66127782DD700C09201 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		8A0DF66227782DD700C09201 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8A0DF66727782DD700C09201 /* Anime4KMetal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Anime4KMetal.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A0DF67427782DD700C09201 /* Tests iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A0DF6A127782E0400C09201 /* MPVShader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPVShader.swift; sourceTree = "<group>"; };
+		8A0DF6A627782E4100C09201 /* MPVShaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPVShaderTests.swift; sourceTree = "<group>"; };
+		8AECBC1727790AA200922C26 /* Anime4KMetal (iOS).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Anime4KMetal (iOS).entitlements"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8A07C91627783F870023EC36 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8A07C92F27783F880023EC36 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8A0DF66427782DD700C09201 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8A0DF67127782DD700C09201 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		8A0DF65A27782DD700C09201 = {
+			isa = PBXGroup;
+			children = (
+				8AECBC1727790AA200922C26 /* Anime4KMetal (iOS).entitlements */,
+				8A07C9732778EC920023EC36 /* Anime4KMetal--iOS--Info.plist */,
+				8A07C9722778BBBF0023EC36 /* Anime4KMetal--tvOS--Info.plist */,
+				8A0DF65F27782DD700C09201 /* Shared */,
+				8A0DF6AB27782E8700C09201 /* Tests Shared */,
+				8A0DF66827782DD700C09201 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8A0DF65F27782DD700C09201 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				8A07C91027783E530023EC36 /* glsl */,
+				8A0DF66027782DD700C09201 /* Anime4KMetalApp.swift */,
+				8A0DF66127782DD700C09201 /* ContentView.swift */,
+				8A0DF66227782DD700C09201 /* Assets.xcassets */,
+				8A0DF6A127782E0400C09201 /* MPVShader.swift */,
+				8A07C95727784C680023EC36 /* Anime4K.swift */,
+				8A07C95127784B9F0023EC36 /* PlayerController.swift */,
+				8A07C9652778B2570023EC36 /* PlayerView.swift */,
+				8A07C95E2778544C0023EC36 /* Average.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		8A0DF66827782DD700C09201 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8A0DF66727782DD700C09201 /* Anime4KMetal.app */,
+				8A0DF67427782DD700C09201 /* Tests iOS.xctest */,
+				8A07C91927783F870023EC36 /* Anime4KMetal.app */,
+				8A07C93227783F880023EC36 /* Tests tvOS.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8A0DF6AB27782E8700C09201 /* Tests Shared */ = {
+			isa = PBXGroup;
+			children = (
+				8A0DF6A627782E4100C09201 /* MPVShaderTests.swift */,
+			);
+			path = "Tests Shared";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8A07C91827783F870023EC36 /* Anime4KMetal (tvOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8A07C93A27783F880023EC36 /* Build configuration list for PBXNativeTarget "Anime4KMetal (tvOS)" */;
+			buildPhases = (
+				8A07C91527783F870023EC36 /* Sources */,
+				8A07C91627783F870023EC36 /* Frameworks */,
+				8A07C91727783F870023EC36 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Anime4KMetal (tvOS)";
+			productName = Anime4KMetal;
+			productReference = 8A07C91927783F870023EC36 /* Anime4KMetal.app */;
+			productType = "com.apple.product-type.application";
+		};
+		8A07C93127783F880023EC36 /* Tests tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8A07C94027783F880023EC36 /* Build configuration list for PBXNativeTarget "Tests tvOS" */;
+			buildPhases = (
+				8A07C92E27783F880023EC36 /* Sources */,
+				8A07C92F27783F880023EC36 /* Frameworks */,
+				8A07C93027783F880023EC36 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8A07C93427783F880023EC36 /* PBXTargetDependency */,
+			);
+			name = "Tests tvOS";
+			productName = Anime4KMetalUITests;
+			productReference = 8A07C93227783F880023EC36 /* Tests tvOS.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		8A0DF66627782DD700C09201 /* Anime4KMetal (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8A0DF69027782DD700C09201 /* Build configuration list for PBXNativeTarget "Anime4KMetal (iOS)" */;
+			buildPhases = (
+				8A0DF66327782DD700C09201 /* Sources */,
+				8A0DF66427782DD700C09201 /* Frameworks */,
+				8A0DF66527782DD700C09201 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Anime4KMetal (iOS)";
+			productName = "Anime4KMetal (iOS)";
+			productReference = 8A0DF66727782DD700C09201 /* Anime4KMetal.app */;
+			productType = "com.apple.product-type.application";
+		};
+		8A0DF67327782DD700C09201 /* Tests iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8A0DF69627782DD700C09201 /* Build configuration list for PBXNativeTarget "Tests iOS" */;
+			buildPhases = (
+				8A0DF67027782DD700C09201 /* Sources */,
+				8A0DF67127782DD700C09201 /* Frameworks */,
+				8A0DF67227782DD700C09201 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8A0DF67627782DD700C09201 /* PBXTargetDependency */,
+			);
+			name = "Tests iOS";
+			productName = "Tests iOS";
+			productReference = 8A0DF67427782DD700C09201 /* Tests iOS.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8A0DF65B27782DD700C09201 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1320;
+				LastUpgradeCheck = 1320;
+				TargetAttributes = {
+					8A07C91827783F870023EC36 = {
+						CreatedOnToolsVersion = 13.2.1;
+					};
+					8A07C93127783F880023EC36 = {
+						CreatedOnToolsVersion = 13.2.1;
+						TestTargetID = 8A07C91827783F870023EC36;
+					};
+					8A0DF66627782DD700C09201 = {
+						CreatedOnToolsVersion = 13.2.1;
+					};
+					8A0DF67327782DD700C09201 = {
+						CreatedOnToolsVersion = 13.2.1;
+						TestTargetID = 8A0DF66627782DD700C09201;
+					};
+				};
+			};
+			buildConfigurationList = 8A0DF65E27782DD700C09201 /* Build configuration list for PBXProject "Anime4KMetal" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 8A0DF65A27782DD700C09201;
+			productRefGroup = 8A0DF66827782DD700C09201 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8A0DF66627782DD700C09201 /* Anime4KMetal (iOS) */,
+				8A07C91827783F870023EC36 /* Anime4KMetal (tvOS) */,
+				8A0DF67327782DD700C09201 /* Tests iOS */,
+				8A07C93127783F880023EC36 /* Tests tvOS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8A07C91727783F870023EC36 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8A07C950277843190023EC36 /* glsl in Resources */,
+				8A07C94527783FCD0023EC36 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8A07C93027783F880023EC36 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8A07C94F277843180023EC36 /* glsl in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8A0DF66527782DD700C09201 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8A07C91127783E530023EC36 /* glsl in Resources */,
+				8A0DF68C27782DD700C09201 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8A0DF67227782DD700C09201 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8A07C91327783E530023EC36 /* glsl in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8A07C91527783F870023EC36 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8A07C95C277854320023EC36 /* Anime4K.swift in Sources */,
+				8A07C94727783FD60023EC36 /* Anime4KMetalApp.swift in Sources */,
+				8A07C9672778B2570023EC36 /* PlayerView.swift in Sources */,
+				8A07C94427783FC10023EC36 /* MPVShader.swift in Sources */,
+				8A07C9602778544C0023EC36 /* Average.swift in Sources */,
+				8A07C95627784C2D0023EC36 /* PlayerController.swift in Sources */,
+				8A07C94627783FD40023EC36 /* ContentView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8A07C92E27783F880023EC36 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8A07C94E277842DB0023EC36 /* MPVShader.swift in Sources */,
+				8A07C95D277854340023EC36 /* Anime4K.swift in Sources */,
+				8A07C948277840160023EC36 /* MPVShaderTests.swift in Sources */,
+				8A07C9642778544C0023EC36 /* Average.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8A0DF66327782DD700C09201 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8A07C95827784C680023EC36 /* Anime4K.swift in Sources */,
+				8A0DF68A27782DD700C09201 /* ContentView.swift in Sources */,
+				8A07C9662778B2570023EC36 /* PlayerView.swift in Sources */,
+				8A0DF6A227782E0500C09201 /* MPVShader.swift in Sources */,
+				8A07C95F2778544C0023EC36 /* Average.swift in Sources */,
+				8A07C95227784B9F0023EC36 /* PlayerController.swift in Sources */,
+				8A0DF68827782DD700C09201 /* Anime4KMetalApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8A0DF67027782DD700C09201 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8A07C94C277842DA0023EC36 /* MPVShader.swift in Sources */,
+				8A07C95A27784C680023EC36 /* Anime4K.swift in Sources */,
+				8A0DF6AC27782E9300C09201 /* MPVShaderTests.swift in Sources */,
+				8A07C9622778544C0023EC36 /* Average.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		8A07C93427783F880023EC36 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8A07C91827783F870023EC36 /* Anime4KMetal (tvOS) */;
+			targetProxy = 8A07C93327783F880023EC36 /* PBXContainerItemProxy */;
+		};
+		8A0DF67627782DD700C09201 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8A0DF66627782DD700C09201 /* Anime4KMetal (iOS) */;
+			targetProxy = 8A0DF67527782DD700C09201 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		8A07C93B27783F880023EC36 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 34A2STWT5M;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Anime4KMetal--tvOS--Info.plist";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.imxieyi.Anime4KMetal;
+				PRODUCT_NAME = Anime4KMetal;
+				SDKROOT = appletvos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 15.0;
+			};
+			name = Debug;
+		};
+		8A07C93C27783F880023EC36 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 34A2STWT5M;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Anime4KMetal--tvOS--Info.plist";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.imxieyi.Anime4KMetal;
+				PRODUCT_NAME = Anime4KMetal;
+				SDKROOT = appletvos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 15.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		8A07C94127783F880023EC36 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 34A2STWT5M;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.imxieyi.Tests-tvOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TEST_TARGET_NAME = "Anime4KMetal (tvOS)";
+				TVOS_DEPLOYMENT_TARGET = 15.0;
+			};
+			name = Debug;
+		};
+		8A07C94227783F880023EC36 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 34A2STWT5M;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.imxieyi.Tests-tvOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TEST_TARGET_NAME = "Anime4KMetal (tvOS)";
+				TVOS_DEPLOYMENT_TARGET = 15.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		8A0DF68E27782DD700C09201 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		8A0DF68F27782DD700C09201 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		8A0DF69127782DD700C09201 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Anime4KMetal (iOS).entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 34A2STWT5M;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Anime4KMetal--iOS--Info.plist";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.imxieyi.Anime4KMetal;
+				PRODUCT_NAME = Anime4KMetal;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,6";
+			};
+			name = Debug;
+		};
+		8A0DF69227782DD700C09201 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Anime4KMetal (iOS).entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 34A2STWT5M;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Anime4KMetal--iOS--Info.plist";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.imxieyi.Anime4KMetal;
+				PRODUCT_NAME = Anime4KMetal;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,6";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		8A0DF69727782DD700C09201 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 34A2STWT5M;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.imxieyi.Tests-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,6";
+				TEST_TARGET_NAME = "Anime4KMetal (iOS)";
+			};
+			name = Debug;
+		};
+		8A0DF69827782DD700C09201 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 34A2STWT5M;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.imxieyi.Tests-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,6";
+				TEST_TARGET_NAME = "Anime4KMetal (iOS)";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8A07C93A27783F880023EC36 /* Build configuration list for PBXNativeTarget "Anime4KMetal (tvOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8A07C93B27783F880023EC36 /* Debug */,
+				8A07C93C27783F880023EC36 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8A07C94027783F880023EC36 /* Build configuration list for PBXNativeTarget "Tests tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8A07C94127783F880023EC36 /* Debug */,
+				8A07C94227783F880023EC36 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8A0DF65E27782DD700C09201 /* Build configuration list for PBXProject "Anime4KMetal" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8A0DF68E27782DD700C09201 /* Debug */,
+				8A0DF68F27782DD700C09201 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8A0DF69027782DD700C09201 /* Build configuration list for PBXNativeTarget "Anime4KMetal (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8A0DF69127782DD700C09201 /* Debug */,
+				8A0DF69227782DD700C09201 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8A0DF69627782DD700C09201 /* Build configuration list for PBXNativeTarget "Tests iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8A0DF69727782DD700C09201 /* Debug */,
+				8A0DF69827782DD700C09201 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 8A0DF65B27782DD700C09201 /* Project object */;
+}
