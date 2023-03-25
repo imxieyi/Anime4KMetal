@@ -37,6 +37,8 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
     
     private var inW: Int = 0
     private var inH: Int = 0
+    private var outW: Int = 0
+    private var outH: Int = 0
     
     var isShowing = false
     
@@ -91,25 +93,34 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
         #endif
         // Setup MTKView
         mtkView = MTKView(frame: view.frame, device: device)
+        mtkView.translatesAutoresizingMaskIntoConstraints = false
         view.insertSubview(mtkView, at: 0)
         mtkView.delegate = self
         mtkView.framebufferOnly = false
-        mtkView.autoResizeDrawable = false
+        mtkView.autoResizeDrawable = true
         mtkView.contentMode = .scaleAspectFit
         mtkView.enableSetNeedsDisplay = true
         mtkView.isPaused = true
         mtkView.contentScaleFactor = 1
-        let width = view.frame.width * UIScreen.main.scale
-        let height = view.frame.height * UIScreen.main.scale
-        mtkView.drawableSize = CGSize(width: width, height: height)
         // Setup performance banner
-        perfBanner = UILabel(frame: CGRect(x: 0, y: view.frame.height - 28, width: view.frame.width, height: 28))
+        perfBanner = UILabel()
+        perfBanner.translatesAutoresizingMaskIntoConstraints = false
         view.insertSubview(perfBanner, at: 1)
         perfBanner.backgroundColor = .black
         perfBanner.textColor = .white
         perfBanner.alpha = 0.5
         perfBanner.textAlignment = .left
         perfBanner.font = .monospacedSystemFont(ofSize: 20, weight: .regular)
+        view.addConstraints([
+            NSLayoutConstraint(item: mtkView!, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: 0),
+            NSLayoutConstraint(item: mtkView!, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0),
+            NSLayoutConstraint(item: mtkView!, attribute: .leading, relatedBy: .equal, toItem: view, attribute: .leading, multiplier: 1, constant: 0),
+            NSLayoutConstraint(item: mtkView!, attribute: .trailing, relatedBy: .equal, toItem: view, attribute: .trailing, multiplier: 1, constant: 0),
+            NSLayoutConstraint(item: perfBanner!, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 28),
+            NSLayoutConstraint(item: perfBanner!, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0),
+            NSLayoutConstraint(item: perfBanner!, attribute: .leading, relatedBy: .equal, toItem: view, attribute: .leading, multiplier: 1, constant: 0),
+            NSLayoutConstraint(item: perfBanner!, attribute: .trailing, relatedBy: .equal, toItem: view, attribute: .trailing, multiplier: 1, constant: 0),
+        ])
     }
     
     func playVideo() {
@@ -192,16 +203,18 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
             return
         }
         
-        let outW = view.frame.width * UIScreen.main.scale
-        let outH = view.frame.height * UIScreen.main.scale
+        let outW = Int(view.frame.width * UIScreen.main.scale)
+        let outH = Int(view.frame.height * UIScreen.main.scale)
         
-        if self.inW != inW || self.inH != inH {
+        if self.inW != inW || self.inH != inH || self.outW != outW || self.outH != outH {
             guard anime4K != nil else {
                 return
             }
             self.inW = inW
             self.inH = inH
-            try! anime4K.compileShaders(device, inW: inW, inH: inH, outW: Int(outW), outH: Int(outH))
+            self.outW = outW
+            self.outH = outH
+            try! anime4K.compileShaders(device, inW: inW, inH: inH, outW: outW, outH: outH)
         }
         inFlightFrames.wrappingIncrement(ordering: .sequentiallyConsistent)
 

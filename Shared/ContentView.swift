@@ -60,7 +60,6 @@ struct ContentView: View {
                     showRemotePlayer.toggle()
                 }.fullScreenCover(isPresented: $showRemotePlayer, onDismiss: nil) {
                     PlayerView(shader: selected, videoUrl: URL(string: videoUrl)!)
-                        .ignoresSafeArea()
                 }.disabled(videoUrl.count == 0)
             } header: {
                 Text("Remote file")
@@ -70,7 +69,6 @@ struct ContentView: View {
                     showFileImporter.toggle()
                 }.fullScreenCover(isPresented: $showLocalPlayer, onDismiss: nil) {
                     PlayerView(shader: selected, videoUrl: localFileUrl)
-                        .ignoresSafeArea()
                 }
             } header: {
                 Text("Local file")
