@@ -21,10 +21,12 @@ class Anime4K {
     let name: String
     let shaders: [MPVShader]
     var pipelineStates: [MTLComputePipelineState]
+    var textureMap: [String : MTLTexture]
     
     init(_ name: String, subdir: String) throws {
         self.name = name
         self.pipelineStates = []
+        self.textureMap = [:]
         guard let glslFile = Bundle(for: Anime4K.self).url(forResource: name, withExtension: nil, subdirectory: "glsl/" + subdir) else {
             throw Anime4KError.fileNotFound(name)
         }
@@ -37,6 +39,7 @@ class Anime4K {
     
     func compileShaders(_ device: MTLDevice, inW: Int, inH: Int, outW: Int, outH: Int) throws {
         pipelineStates.removeAll()
+        textureMap.removeAll()
         print("Trying to compile GLSL shaders in " + name)
         try shaders.forEach { shader in
             print("Metal code for " + shader.name)
@@ -72,7 +75,6 @@ class Anime4K {
         guard pipelineStates.count == shaders.count else {
             return
         }
-        var textureMap: [String: MTLTexture] = [:]
         textureMap["MAIN"] = input
         textureMap["output"] = output
         
