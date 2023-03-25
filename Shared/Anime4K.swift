@@ -20,11 +20,11 @@ class Anime4K {
     
     let name: String
     let shaders: [MPVShader]
-    var mtlFunctions: [MTLFunction]
+    var pipelineStates: [MTLComputePipelineState]
     
     init(_ name: String, subdir: String) throws {
         self.name = name
-        self.mtlFunctions = []
+        self.pipelineStates = []
         guard let glslFile = Bundle(for: Anime4K.self).url(forResource: name, withExtension: nil, subdirectory: "glsl/" + subdir) else {
             throw Anime4KError.fileNotFound(name)
         }
@@ -36,7 +36,7 @@ class Anime4K {
     }
     
     func compileShaders(_ device: MTLDevice, inW: Int, inH: Int, outW: Int, outH: Int) throws {
-        mtlFunctions.removeAll()
+        pipelineStates.removeAll()
         print("Trying to compile GLSL shaders in " + name)
         try shaders.forEach { shader in
             print("Metal code for " + shader.name)
@@ -64,12 +64,12 @@ class Anime4K {
             constants.setConstantValue(&outputH, type: .float, index: 3)
             constants.setConstantValue(&textureW, type: .float, index: 4)
             constants.setConstantValue(&textureH, type: .float, index: 5)
-            mtlFunctions.append(try device.makeLibrary(source: shader.metalCode, options: nil).makeFunction(name: shader.functionName, constantValues: constants))
+            pipelineStates.append(try device.makeComputePipelineState(function: try device.makeLibrary(source: shader.metalCode, options: nil).makeFunction(name: shader.functionName, constantValues: constants)))
         }
     }
     
     func encode(_ device: MTLDevice, cmdBuf: MTLCommandBuffer, input: MTLTexture, output: MTLTexture) throws {
-        guard mtlFunctions.count == shaders.count else {
+        guard pipelineStates.count == shaders.count else {
             return
         }
         var textureMap: [String: MTLTexture] = [:]
@@ -86,11 +86,10 @@ class Anime4K {
             if let heightMultiplier = shader.height?.1 {
                 outputH = Float(Double(outputH) * heightMultiplier)
             }
-            let function = mtlFunctions[i]
             guard let encoder = cmdBuf.makeComputeCommandEncoder() else {
                 throw Anime4KError.encoderCreationFail(shader.functionName)
             }
-            let pipelineState = try device.makeComputePipelineState(function: function)
+            let pipelineState = pipelineStates[i]
             encoder.setComputePipelineState(pipelineState)
             for j in 0..<shader.inputTextureNames.count {
                 var textureName = shader.inputTextureNames[j]
@@ -122,9 +121,13 @@ class Anime4K {
                 textureMap[shader.outputTextureName] = device.makeTexture(descriptor: desc)
             }
             encoder.setTexture(textureMap[shader.outputTextureName], index: shader.inputTextureNames.count)
-            let threadGroupCount = MTLSize(width: 5, height: 5, depth: 1)
-            let threadGroups = MTLSize(width: output.width / threadGroupCount.width, height: output.height / threadGroupCount.height, depth: 1)
-            encoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadGroupCount)
+            let w = pipelineState.threadExecutionWidth
+            let h = pipelineState.maxTotalThreadsPerThreadgroup / w
+            let threadsPerThreadgroup = MTLSizeMake(w, h, 1)
+            let threadgroupsPerGrid = MTLSize(width: (output.width + w - 1) / w,
+                                              height: (output.height + h - 1) / h,
+                                              depth: output.arrayLength)
+            encoder.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
             encoder.endEncoding()
         }
     }
