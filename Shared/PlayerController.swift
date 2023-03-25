@@ -72,7 +72,7 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        commandQueue = device.makeCommandQueue()!
+        commandQueue = device.makeCommandQueue(maxCommandBufferCount: 3)!
         var textureCache: CVMetalTextureCache?
         guard CVMetalTextureCacheCreate(kCFAllocatorDefault, nil, device, nil, &textureCache) == kCVReturnSuccess else {
             fatalError("Failed to create texture cache")
@@ -161,7 +161,6 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
     
     @objc private func readBuffer(_ sender: CADisplayLink) {
         if inFlightFrames.load(ordering: .sequentiallyConsistent) >= 3 {
-            print("Dropping frame")
             frameDrops += 1
             return
         }
@@ -191,8 +190,10 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
     private func render(in view: MTKView) -> Bool {
         let startRenderTime = CACurrentMediaTime()
         guard let pixelBuffer = self.pixelBuffer else {
+            inFlightFrames.wrappingIncrement(ordering: .sequentiallyConsistent)
             return false
         }
+        self.pixelBuffer = nil
         
         let inW = CVPixelBufferGetWidth(pixelBuffer)
         let inH = CVPixelBufferGetHeight(pixelBuffer)
