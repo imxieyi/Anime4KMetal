@@ -26,9 +26,14 @@ class Anime4K {
     let name: String
     let shaders: [MPVShader]
     let libraries: [MTLLibrary]
+    let defaultLibrary: MTLLibrary
     var pipelineStates: [MTLComputePipelineState]
+    var finalResizePS: MTLComputePipelineState!
     var textureMap: [[String : MTLTexture]]
     var bufferIndex = -1
+    
+    var outputW: Float = 0
+    var outputH: Float = 0
     
     init(_ name: String, subdir: String, device: MTLDevice) throws {
         self.name = name
@@ -48,17 +53,18 @@ class Anime4K {
             print(shader.metalCode)
             return try device.makeLibrary(source: shader.metalCode, options: nil)
         }
+        defaultLibrary = try device.makeDefaultLibrary(bundle: .main)
     }
     
     func compileShaders(_ device: MTLDevice, inW: Int, inH: Int, outW: Int, outH: Int) throws {
         pipelineStates.removeAll()
         textureMap.removeAll()
         bufferIndex = -1
+        var inputW = Float(inW)
+        var inputH = Float(inH)
         for i in 0..<shaders.count {
             let shader = shaders[i]
             let library = libraries[i]
-            var inputW = Float(inW)
-            var inputH = Float(inH)
             var outputW = inputW
             var outputH = inputH
             if let widthMultiplier = shader.width?.1 {
@@ -67,12 +73,10 @@ class Anime4K {
             if let heightMultiplier = shader.height?.1 {
                 outputH = Float(Double(outputH) * heightMultiplier)
             }
+            self.outputW = outputW
+            self.outputH = outputH
             var textureW = outputW
             var textureH = outputH
-            if shader.outputTextureName == "output" {
-                textureW = Float(outW)
-                textureH = Float(outH)
-            }
             let constants = MTLFunctionConstantValues()
             constants.setConstantValue(&inputW, type: .float, index: 0)
             constants.setConstantValue(&inputH, type: .float, index: 1)
@@ -82,6 +86,14 @@ class Anime4K {
             constants.setConstantValue(&textureH, type: .float, index: 5)
             pipelineStates.append(try device.makeComputePipelineState(function: library.makeFunction(name: shader.functionName, constantValues: constants)))
         }
+        var outputW = Float(outW)
+        var outputH = Float(outH)
+        let constants = MTLFunctionConstantValues()
+        constants.setConstantValue(&inputW, type: .float, index: 0)
+        constants.setConstantValue(&inputH, type: .float, index: 1)
+        constants.setConstantValue(&outputW, type: .float, index: 2)
+        constants.setConstantValue(&outputH, type: .float, index: 3)
+        finalResizePS = try device.makeComputePipelineState(function: try defaultLibrary.makeFunction(name: "CenterResize", constantValues: constants))
     }
     
     func encode(_ device: MTLDevice, cmdBuf: MTLCommandBuffer, input: MTLTexture, output: MTLTexture) throws {
@@ -94,7 +106,14 @@ class Anime4K {
         }
         
         textureMap[bufferIndex]["MAIN"] = input
-        textureMap[bufferIndex]["output"] = output
+        
+        let desc = MTLTextureDescriptor()
+        desc.width = Int(outputW)
+        desc.height = Int(outputH)
+        desc.pixelFormat = .rgba16Float
+        desc.usage = [.shaderWrite, .shaderRead]
+        desc.storageMode = .private
+        textureMap[bufferIndex]["output"] = device.makeTexture(descriptor: desc)
         
         for i in 0..<shaders.count {
             let shader = shaders[i]
@@ -140,16 +159,29 @@ class Anime4K {
                 desc.storageMode = .private
                 textureMap[bufferIndex][shader.outputTextureName] = device.makeTexture(descriptor: desc)
             }
-            encoder.setTexture(textureMap[bufferIndex][shader.outputTextureName], index: shader.inputTextureNames.count)
+            let outputTex = textureMap[bufferIndex][shader.outputTextureName]!
+            encoder.setTexture(outputTex, index: shader.inputTextureNames.count)
             let w = pipelineState.threadExecutionWidth
             let h = pipelineState.maxTotalThreadsPerThreadgroup / w
             let threadsPerThreadgroup = MTLSizeMake(w, h, 1)
-            let threadgroupsPerGrid = MTLSize(width: (output.width + w - 1) / w,
-                                              height: (output.height + h - 1) / h,
-                                              depth: output.arrayLength)
+            let threadgroupsPerGrid = MTLSize(width: (outputTex.width + w - 1) / w,
+                                              height: (outputTex.height + h - 1) / h,
+                                              depth: outputTex.arrayLength)
             encoder.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
             encoder.endEncoding()
         }
+        let encoder = cmdBuf.makeComputeCommandEncoder()!
+        encoder.setComputePipelineState(finalResizePS)
+        encoder.setTexture(textureMap[bufferIndex]["output"], index: 0)
+        encoder.setTexture(output, index: 1)
+        let w = finalResizePS.threadExecutionWidth
+        let h = finalResizePS.maxTotalThreadsPerThreadgroup / w
+        let threadsPerThreadgroup = MTLSizeMake(w, h, 1)
+        let threadgroupsPerGrid = MTLSize(width: (output.width + w - 1) / w,
+                                          height: (output.height + h - 1) / h,
+                                          depth: output.arrayLength)
+        encoder.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
+        encoder.endEncoding()
     }
     
 }

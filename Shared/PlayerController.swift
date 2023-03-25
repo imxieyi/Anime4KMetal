@@ -236,7 +236,7 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
                 let currentTime = CACurrentMediaTime()
                 if self.lastFrameTime != 0 {
                     let overhead = endEncodeTime - startRenderTime
-                    self.perfBanner.text = String(format: "CPU: %02.1fms  Queued: %d/%d  Dropped: %d  In: %dx%d  Out: %dx%d  Shader: %@", self.cpuOverheadAverage.update(overhead * 1000), self.inFlightFrames.load(ordering: .sequentiallyConsistent) + 1, Anime4K.bufferCount, self.frameDrops, inW, inH, Int(outW), Int(outH), self.shader ?? "unknown")
+                    self.perfBanner.text = String(format: "CPU: %02.1fms  Queued: %d/%d  Dropped: %d  In: %dx%d  Out: %dx%d  Shader: %@", self.cpuOverheadAverage.update(overhead * 1000), self.inFlightFrames.load(ordering: .sequentiallyConsistent) + 1, Anime4K.bufferCount, self.frameDrops, inW, inH, Int(self.anime4K.outputW), Int(self.anime4K.outputH), self.shader ?? "unknown")
                 }
                 self.lastFrameTime = currentTime
             }
