@@ -211,6 +211,7 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
         let outH = Int(view.frame.height * UIScreen.main.scale)
         
         if self.inW != inW || self.inH != inH || self.outW != outW || self.outH != outH {
+            print("Display resized, reload shaders")
             guard !anime4Ks.isEmpty else {
                 return false
             }
@@ -221,7 +222,7 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
             var currentInW = inW
             var currentInH = inH
             for anime4K in anime4Ks {
-                try! anime4K.compileShaders(device, inW: currentInW, inH: currentInH, outW: outW, outH: outH)
+                try! anime4K.compileShaders(device, videoInW: inW, videoInH: inH, textureInW: currentInW, textureInH: currentInH, displayOutW: outW, displayOutH: outH)
                 currentInW = Int(anime4K.outputW)
                 currentInH = Int(anime4K.outputH)
             }

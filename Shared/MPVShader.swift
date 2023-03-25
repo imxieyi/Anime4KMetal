@@ -21,8 +21,8 @@ struct MPVShader {
     var binds: [String]
     var save: String?
     var components: Int?
-    var width: (String, Double)?
-    var height: (String, Double)?
+    var width: (String, Float)?
+    var height: (String, Float)?
     var when: String?
     var sigma: Double?
     var code: [String]
@@ -191,9 +191,9 @@ kernel void \(functionName)(\(entryArgs)) {
                 case "WIDTH":
                     if splitted.count == 4 {
                         if splitted[3] == "*" {
-                            current.width = (String(splitted[1].split(separator: ".")[0]), Double(splitted[2])!)
+                            current.width = (String(splitted[1].split(separator: ".")[0]), Float(splitted[2])!)
                         } else if splitted[3] == "/" {
-                            current.width = (String(splitted[1].split(separator: ".")[0]), 1.0 / Double(splitted[2])!)
+                            current.width = (String(splitted[1].split(separator: ".")[0]), 1.0 / Float(splitted[2])!)
                         } else {
                             throw GLSLError.parseFail(line)
                         }
@@ -203,9 +203,9 @@ kernel void \(functionName)(\(entryArgs)) {
                 case "HEIGHT":
                     if splitted.count == 4 {
                         if splitted[3] == "*" {
-                            current.height = (String(splitted[1].split(separator: ".")[0]), Double(splitted[2])!)
+                            current.height = (String(splitted[1].split(separator: ".")[0]), Float(splitted[2])!)
                         } else if splitted[3] == "/" {
-                            current.height = (String(splitted[1].split(separator: ".")[0]), 1.0 / Double(splitted[2])!)
+                            current.height = (String(splitted[1].split(separator: ".")[0]), 1.0 / Float(splitted[2])!)
                         } else {
                             throw GLSLError.parseFail(line)
                         }
