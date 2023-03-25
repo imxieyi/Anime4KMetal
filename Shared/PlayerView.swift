@@ -23,6 +23,7 @@ struct PlayerView: UIViewControllerRepresentable {
     
     func makeUIViewController(context: Context) -> PlayerController {
         let controller = PlayerController()
+        controller.device = MTLCreateSystemDefaultDevice()!
         controller.videoUrl = videoUrl
         if let shader = shader {
             controller.shader = shader

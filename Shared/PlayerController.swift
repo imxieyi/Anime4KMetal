@@ -21,7 +21,7 @@ import Atomics
 
 class PlayerController: AVPlayerViewController, MTKViewDelegate {
 
-    private var device: MTLDevice!
+    var device: MTLDevice!
     private var mtkView: MTKView!
     private var perfBanner: UILabel!
     
@@ -54,7 +54,7 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
         didSet {
             if let shader = shader, shader.count > 0 {
                 let splits = shader.split(separator: "/")
-                anime4K = try! Anime4K(String(splits[1]), subdir: String(splits[0]))
+                anime4K = try! Anime4K(String(splits[1]), subdir: String(splits[0]), device: device)
             }
         }
     }
@@ -73,7 +73,6 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        device = MTLCreateSystemDefaultDevice()!
         commandQueue = device.makeCommandQueue()!
         var textureCache: CVMetalTextureCache?
         guard CVMetalTextureCacheCreate(kCFAllocatorDefault, nil, device, nil, &textureCache) == kCVReturnSuccess else {

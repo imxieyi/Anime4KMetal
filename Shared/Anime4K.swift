@@ -20,11 +20,12 @@ class Anime4K {
     
     let name: String
     let shaders: [MPVShader]
+    let libraries: [MTLLibrary]
     var pipelineStates: [MTLComputePipelineState]
     var textureMap: [[String : MTLTexture]]
     var bufferIndex = -1
     
-    init(_ name: String, subdir: String) throws {
+    init(_ name: String, subdir: String, device: MTLDevice) throws {
         self.name = name
         self.pipelineStates = []
         self.textureMap = []
@@ -36,16 +37,21 @@ class Anime4K {
             throw Anime4KError.fileCorrupt(name)
         }
         shaders = try MPVShader.parse(glsl)
+        print("Trying to compile GLSL shaders in " + name)
+        libraries = try shaders.map { shader in
+            print("Metal code for " + shader.name)
+            print(shader.metalCode)
+            return try device.makeLibrary(source: shader.metalCode, options: nil)
+        }
     }
     
     func compileShaders(_ device: MTLDevice, inW: Int, inH: Int, outW: Int, outH: Int) throws {
         pipelineStates.removeAll()
         textureMap.removeAll()
         bufferIndex = -1
-        print("Trying to compile GLSL shaders in " + name)
-        try shaders.forEach { shader in
-            print("Metal code for " + shader.name)
-            print(shader.metalCode)
+        for i in 0..<shaders.count {
+            let shader = shaders[i]
+            let library = libraries[i]
             var inputW = Float(inW)
             var inputH = Float(inH)
             var outputW = inputW
@@ -69,7 +75,7 @@ class Anime4K {
             constants.setConstantValue(&outputH, type: .float, index: 3)
             constants.setConstantValue(&textureW, type: .float, index: 4)
             constants.setConstantValue(&textureH, type: .float, index: 5)
-            pipelineStates.append(try device.makeComputePipelineState(function: try device.makeLibrary(source: shader.metalCode, options: nil).makeFunction(name: shader.functionName, constantValues: constants)))
+            pipelineStates.append(try device.makeComputePipelineState(function: library.makeFunction(name: shader.functionName, constantValues: constants)))
         }
     }
     
