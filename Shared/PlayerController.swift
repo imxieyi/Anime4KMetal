@@ -128,6 +128,7 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
         #if os(tvOS)
         appliesPreferredDisplayCriteriaAutomatically = true
         #endif
+        videoUrl.startAccessingSecurityScopedResource()
         let playerItem = AVPlayerItem(url: videoUrl)
         playerItem.add(videoOutput)
         player = AVPlayer(playerItem: playerItem)
@@ -154,6 +155,7 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
         anime4K = nil
         player?.replaceCurrentItem(with: nil)
         displayLink.invalidate()
+        videoUrl?.stopAccessingSecurityScopedResource()
     }
     
     var inFlightFrames = ManagedAtomic(0)
