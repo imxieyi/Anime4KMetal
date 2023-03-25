@@ -54,12 +54,9 @@ constant float in_w [[function_constant(0)]];
 constant float in_h [[function_constant(1)]];
 constant float out_w [[function_constant(2)]];
 constant float out_h [[function_constant(3)]];
-constant float tex_w [[function_constant(4)]];
-constant float tex_h [[function_constant(5)]];
 
 #define origin_size float2(in_w, in_h)
 #define destination_size float2(out_w, out_h)
-#define texture_size float2(tex_w, tex_h)
 
 using vec2 = float2;
 using vec3 = float3;
@@ -84,7 +81,7 @@ constexpr sampler nearestSampler (coord::normalized, address::clamp_to_edge, fil
         if hook == "MAIN" {
             header = header + """
 #define MAIN_pos mtlPos
-#define MAIN_pt (vec2(1, 1) / texture_size)
+#define MAIN_pt (vec2(1, 1) / destination_size)
 #define MAIN_size vec2(1, 1)
 #define MAIN_tex(pos) MAIN.sample(textureSampler, pos)
 #define MAIN_texOff(off) MAIN_tex(MAIN_pos + MAIN_pt * vec2(off))
@@ -146,7 +143,7 @@ constexpr sampler nearestSampler (coord::normalized, address::clamp_to_edge, fil
         // Normalize coordinates to [0, 1]
         body += """
 kernel void \(functionName)(\(entryArgs)) {
-    float2 mtlPos = float2(gid) / (texture_size - float2(1, 1));
+    float2 mtlPos = float2(gid) / (destination_size - float2(1, 1));
     output.write(hook(\(hookCallArgs)), gid);
 }
 

@@ -82,8 +82,6 @@ class Anime4K {
             constants.setConstantValue(&inputH, type: .float, index: 1)
             constants.setConstantValue(&outputW, type: .float, index: 2)
             constants.setConstantValue(&outputH, type: .float, index: 3)
-            constants.setConstantValue(&textureW, type: .float, index: 4)
-            constants.setConstantValue(&textureH, type: .float, index: 5)
             pipelineStates.append(try device.makeComputePipelineState(function: library.makeFunction(name: shader.functionName, constantValues: constants)))
         }
         var outputW = Float(outW)
