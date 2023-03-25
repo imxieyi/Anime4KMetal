@@ -84,19 +84,19 @@ struct ContentView: View {
         }
         .fullScreenCover(item: $playerViewItem) { item in
             if item == .remote {
-                if #available(tvOS 15.0, *) {
-                    PlayerView(shader: selected, videoUrl: URL(string: videoUrl)!)
-                        .ignoresSafeArea()
-                } else {
-                    PlayerView(shader: selected, videoUrl: URL(string: videoUrl)!)
-                }
+                #if os(tvOS)
+                PlayerView(shader: selected, videoUrl: URL(string: videoUrl)!)
+                    .ignoresSafeArea()
+                #else
+                PlayerView(shader: selected, videoUrl: URL(string: videoUrl)!)
+                #endif
             } else if item == .local {
-                if #available(tvOS 15.0, *) {
-                    PlayerView(shader: selected, videoUrl: localFileUrl)
-                        .ignoresSafeArea()
-                } else {
-                    PlayerView(shader: selected, videoUrl: localFileUrl)
-                }
+                #if os(tvOS)
+                PlayerView(shader: selected, videoUrl: localFileUrl)
+                    .ignoresSafeArea()
+                #else
+                PlayerView(shader: selected, videoUrl: localFileUrl)
+                #endif
             }
         }
     }
