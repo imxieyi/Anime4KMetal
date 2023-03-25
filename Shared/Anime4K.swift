@@ -21,12 +21,13 @@ class Anime4K {
     let name: String
     let shaders: [MPVShader]
     var pipelineStates: [MTLComputePipelineState]
-    var textureMap: [String : MTLTexture]
+    var textureMap: [[String : MTLTexture]]
+    var bufferIndex = -1
     
     init(_ name: String, subdir: String) throws {
         self.name = name
         self.pipelineStates = []
-        self.textureMap = [:]
+        self.textureMap = []
         guard let glslFile = Bundle(for: Anime4K.self).url(forResource: name, withExtension: nil, subdirectory: "glsl/" + subdir) else {
             throw Anime4KError.fileNotFound(name)
         }
@@ -40,6 +41,7 @@ class Anime4K {
     func compileShaders(_ device: MTLDevice, inW: Int, inH: Int, outW: Int, outH: Int) throws {
         pipelineStates.removeAll()
         textureMap.removeAll()
+        bufferIndex = -1
         print("Trying to compile GLSL shaders in " + name)
         try shaders.forEach { shader in
             print("Metal code for " + shader.name)
@@ -75,8 +77,13 @@ class Anime4K {
         guard pipelineStates.count == shaders.count else {
             return
         }
-        textureMap["MAIN"] = input
-        textureMap["output"] = output
+        bufferIndex = (bufferIndex + 1) % 3
+        if textureMap.count <= bufferIndex {
+            textureMap.append([:])
+        }
+        
+        textureMap[bufferIndex]["MAIN"] = input
+        textureMap[bufferIndex]["output"] = output
         
         for i in 0..<shaders.count {
             let shader = shaders[i]
@@ -98,7 +105,7 @@ class Anime4K {
                 if textureName == "HOOKED", let hook = shader.hook {
                     textureName = hook
                 }
-                if !textureMap.keys.contains(textureName) {
+                if !textureMap[bufferIndex].keys.contains(textureName) {
                     if textureName == shader.save {
                         let desc = MTLTextureDescriptor()
                         desc.width = Int(outputW)
@@ -106,23 +113,23 @@ class Anime4K {
                         desc.pixelFormat = .rgba16Float
                         desc.usage = [.shaderWrite, .shaderRead]
                         desc.storageMode = .private
-                        textureMap[textureName] = device.makeTexture(descriptor: desc)
+                        textureMap[bufferIndex][textureName] = device.makeTexture(descriptor: desc)
                     } else {
                         throw Anime4KError.encoderFail("texture \(textureName) is missing")
                     }
                 }
-                encoder.setTexture(textureMap[textureName], index: j)
+                encoder.setTexture(textureMap[bufferIndex][textureName], index: j)
             }
-            if shader.binds.contains(shader.outputTextureName) || !textureMap.keys.contains(shader.outputTextureName) {
+            if shader.binds.contains(shader.outputTextureName) || !textureMap[bufferIndex].keys.contains(shader.outputTextureName) {
                 let desc = MTLTextureDescriptor()
                 desc.width = Int(outputW)
                 desc.height = Int(outputH)
                 desc.pixelFormat = .rgba16Float
                 desc.usage = [.shaderWrite, .shaderRead]
                 desc.storageMode = .private
-                textureMap[shader.outputTextureName] = device.makeTexture(descriptor: desc)
+                textureMap[bufferIndex][shader.outputTextureName] = device.makeTexture(descriptor: desc)
             }
-            encoder.setTexture(textureMap[shader.outputTextureName], index: shader.inputTextureNames.count)
+            encoder.setTexture(textureMap[bufferIndex][shader.outputTextureName], index: shader.inputTextureNames.count)
             let w = pipelineState.threadExecutionWidth
             let h = pipelineState.maxTotalThreadsPerThreadgroup / w
             let threadsPerThreadgroup = MTLSizeMake(w, h, 1)

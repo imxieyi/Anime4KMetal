@@ -35,6 +35,8 @@
 		8A0DF68C27782DD700C09201 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8A0DF66227782DD700C09201 /* Assets.xcassets */; };
 		8A0DF6A227782E0500C09201 /* MPVShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0DF6A127782E0400C09201 /* MPVShader.swift */; };
 		8A0DF6AC27782E9300C09201 /* MPVShaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0DF6A627782E4100C09201 /* MPVShaderTests.swift */; };
+		8A8FBD2129CED11B00BD0722 /* Atomics in Frameworks */ = {isa = PBXBuildFile; productRef = 8A8FBD2029CED11B00BD0722 /* Atomics */; };
+		8A8FBD2429CED13100BD0722 /* Atomics in Frameworks */ = {isa = PBXBuildFile; productRef = 8A8FBD2329CED13100BD0722 /* Atomics */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +81,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A8FBD2429CED13100BD0722 /* Atomics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,6 +96,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A8FBD2129CED11B00BD0722 /* Atomics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -115,6 +119,7 @@
 				8A0DF65F27782DD700C09201 /* Shared */,
 				8A0DF6AB27782E8700C09201 /* Tests Shared */,
 				8A0DF66827782DD700C09201 /* Products */,
+				8A8FBD2229CED13100BD0722 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -153,6 +158,13 @@
 			path = "Tests Shared";
 			sourceTree = "<group>";
 		};
+		8A8FBD2229CED13100BD0722 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -169,6 +181,9 @@
 			dependencies = (
 			);
 			name = "Anime4KMetal (tvOS)";
+			packageProductDependencies = (
+				8A8FBD2329CED13100BD0722 /* Atomics */,
+			);
 			productName = Anime4KMetal;
 			productReference = 8A07C91927783F870023EC36 /* Anime4KMetal.app */;
 			productType = "com.apple.product-type.application";
@@ -204,6 +219,9 @@
 			dependencies = (
 			);
 			name = "Anime4KMetal (iOS)";
+			packageProductDependencies = (
+				8A8FBD2029CED11B00BD0722 /* Atomics */,
+			);
 			productName = "Anime4KMetal (iOS)";
 			productReference = 8A0DF66727782DD700C09201 /* Anime4KMetal.app */;
 			productType = "com.apple.product-type.application";
@@ -261,6 +279,9 @@
 				Base,
 			);
 			mainGroup = 8A0DF65A27782DD700C09201;
+			packageReferences = (
+				8A8FBD1F29CED11B00BD0722 /* XCRemoteSwiftPackageReference "swift-atomics" */,
+			);
 			productRefGroup = 8A0DF66827782DD700C09201 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -743,6 +764,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8A8FBD1F29CED11B00BD0722 /* XCRemoteSwiftPackageReference "swift-atomics" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-atomics.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8A8FBD2029CED11B00BD0722 /* Atomics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8A8FBD1F29CED11B00BD0722 /* XCRemoteSwiftPackageReference "swift-atomics" */;
+			productName = Atomics;
+		};
+		8A8FBD2329CED13100BD0722 /* Atomics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8A8FBD1F29CED11B00BD0722 /* XCRemoteSwiftPackageReference "swift-atomics" */;
+			productName = Atomics;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8A0DF65B27782DD700C09201 /* Project object */;
 }

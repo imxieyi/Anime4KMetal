@@ -17,6 +17,7 @@ import Foundation
 import AVKit
 import MetalKit
 import UIKit
+import Atomics
 
 class PlayerController: AVPlayerViewController, MTKViewDelegate {
 
@@ -144,8 +145,10 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
         player?.pause()
     }
     
+    var inFlightFrames = ManagedAtomic(0)
+    
     @objc private func readBuffer(_ sender: CADisplayLink) {
-        if renderingFrame {
+        if inFlightFrames.load(ordering: .sequentiallyConsistent) >= 3 {
             print("Dropping frame")
             return
         }
@@ -170,8 +173,6 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
     let fpsAverage = Average(count: 10)
     let cpuOverheadAverage = Average(count: 10)
     let gpuTimeAverage = Average(count: 10)
-    
-    var renderingFrame = false
     
     private func render(in view: MTKView) {
         let startRenderTime = CACurrentMediaTime()
@@ -203,7 +204,7 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
             self.inH = inH
             try! anime4K.compileShaders(device, inW: inW, inH: inH, outW: Int(outW), outH: Int(outH))
         }
-        renderingFrame = true
+        inFlightFrames.wrappingIncrement(ordering: .sequentiallyConsistent)
 
         guard let commandBuffer = commandQueue.makeCommandBuffer() else {
             return
@@ -217,8 +218,8 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
             scheduleTime = CACurrentMediaTime()
         }
         commandBuffer.addCompletedHandler { _ in
+            self.inFlightFrames.wrappingDecrement(ordering: .sequentiallyConsistent)
             DispatchQueue.main.async {
-                self.renderingFrame = false
                 let currentTime = CACurrentMediaTime()
                 if self.lastFrameTime != 0 {
                     let fps = 1.0 / (currentTime - self.lastFrameTime)
