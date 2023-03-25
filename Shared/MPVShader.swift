@@ -50,30 +50,23 @@ struct MPVShader {
 #include <metal_stdlib>
 using namespace metal;
 
-constant float in_w [[function_constant(0)]];
-constant float in_h [[function_constant(1)]];
-constant float out_w [[function_constant(2)]];
-constant float out_h [[function_constant(3)]];
-
-#define origin_size float2(in_w, in_h)
-#define destination_size float2(out_w, out_h)
-
 using vec2 = float2;
 using vec3 = float3;
 using vec4 = float4;
 using ivec2 = int2;
 using mat4 = float4x4;
 
-constexpr sampler textureSampler (coord::normalized, address::clamp_to_edge, filter::linear);
-constexpr sampler nearestSampler (coord::normalized, address::clamp_to_edge, filter::nearest);
-
 """
+        var bindSizeIndex = 1
         binds.forEach { bind in
+            bindSizeIndex += 1
             header = header + """
+#define \(bind)_pixsize float2(\(bind).get_width(), \(bind).get_height())
+
 #define \(bind)_pos mtlPos
-#define \(bind)_pt (vec2(1, 1) / \((bind == "HOOKED" || bind != save) ? "origin_size" : "destination_size"))
+#define \(bind)_pt (vec2(1, 1) / \(bind)_pixsize)
 #define \(bind)_size vec2(1, 1)
-#define \(bind)_tex(pos) \(bind).sample(\((bind != save) ? "nearestSampler" : "textureSampler"), pos)
+#define \(bind)_tex(pos) \(bind).sample(textureSampler, pos)
 #define \(bind)_texOff(off) \(bind)_tex(\(bind)_pos + \(bind)_pt * vec2(off))
 
 """
@@ -81,15 +74,15 @@ constexpr sampler nearestSampler (coord::normalized, address::clamp_to_edge, fil
         if hook == "MAIN" {
             header = header + """
 #define MAIN_pos mtlPos
-#define MAIN_pt (vec2(1, 1) / destination_size)
+#define MAIN_pt (vec2(1, 1) / vec2(MAIN.get_width(), MAIN.get_height()))
 #define MAIN_size vec2(1, 1)
 #define MAIN_tex(pos) MAIN.sample(textureSampler, pos)
 #define MAIN_texOff(off) MAIN_tex(MAIN_pos + MAIN_pt * vec2(off))
 
 """
         }
-        var extraArgs = "float2 mtlPos, "
-        var extraCallArgs = "mtlPos, "
+        var extraArgs = "float2 mtlPos, sampler textureSampler, "
+        var extraCallArgs = "mtlPos, textureSampler, "
         var entryArgs = ""
         for i in 0..<binds.count {
             extraArgs += "texture2d<float, access::sample> \(binds[i]), "
@@ -104,7 +97,8 @@ constexpr sampler nearestSampler (coord::normalized, address::clamp_to_edge, fil
             textureIdx += 1
         }
         entryArgs += "texture2d<float, access::write> output [[texture(\(textureIdx))]], "
-        entryArgs += "uint2 gid [[thread_position_in_grid]]"
+        entryArgs += "uint2 gid [[thread_position_in_grid]], "
+        entryArgs += "sampler textureSampler [[sampler(0)]]"
         var functions: [String] = []
         var currentFunc: String? = nil
         var body = ""
@@ -143,7 +137,7 @@ constexpr sampler nearestSampler (coord::normalized, address::clamp_to_edge, fil
         // Normalize coordinates to [0, 1]
         body += """
 kernel void \(functionName)(\(entryArgs)) {
-    float2 mtlPos = float2(gid) / (destination_size - float2(1, 1));
+    float2 mtlPos = float2(gid) / (float2(output.get_width(), output.get_height()) - float2(1, 1));
     output.write(hook(\(hookCallArgs)), gid);
 }
 

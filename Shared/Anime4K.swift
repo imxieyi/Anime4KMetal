@@ -32,6 +32,7 @@ class Anime4K {
     var pipelineStates: [MTLComputePipelineState]
     var finalResizePS: MTLComputePipelineState!
     var textureMap: [[String : MTLTexture]]
+    var samplerStates: [MTLSamplerState]
     var sizeMap: [String: (Float, Float)]
     var bufferIndex = -1
     
@@ -45,6 +46,7 @@ class Anime4K {
     init(_ name: String, subdir: String, device: MTLDevice) throws {
         self.name = name
         self.enabledShaders = []
+        self.samplerStates = []
         self.pipelineStates = []
         self.textureMap = []
         self.sizeMap = [:]
@@ -60,13 +62,16 @@ class Anime4K {
         libraries = try shaders.map { shader in
             print("Metal code for " + shader.name)
             print(shader.metalCode)
-            return try device.makeLibrary(source: shader.metalCode, options: nil)
+            let options = MTLCompileOptions()
+            options.fastMathEnabled = false
+            return try device.makeLibrary(source: shader.metalCode, options: options)
         }
         defaultLibrary = try device.makeDefaultLibrary(bundle: .main)
     }
     
     func compileShaders(_ device: MTLDevice, videoInW: Int, videoInH: Int, textureInW: Int, textureInH: Int, displayOutW: Int, displayOutH: Int) throws {
         enabledShaders.removeAll()
+        samplerStates.removeAll()
         pipelineStates.removeAll()
         textureMap.removeAll()
         sizeMap.removeAll()
@@ -152,21 +157,9 @@ class Anime4K {
             if let save = shader.save, save != "MAIN" {
                 sizeMap[save] = (self.outputW, self.outputH)
             }
-            let constants = MTLFunctionConstantValues()
-            constants.setConstantValue(&self.textureInW, type: .float, index: 0)
-            constants.setConstantValue(&self.textureInH, type: .float, index: 1)
-            constants.setConstantValue(&self.outputW, type: .float, index: 2)
-            constants.setConstantValue(&self.outputH, type: .float, index: 3)
-            pipelineStates.append(try device.makeComputePipelineState(function: library.makeFunction(name: shader.functionName, constantValues: constants)))
+            pipelineStates.append(try device.makeComputePipelineState(function: library.makeFunction(name: shader.functionName)!))
         }
-        var outputW = Float(displayOutW)
-        var outputH = Float(displayOutH)
-        let constants = MTLFunctionConstantValues()
-        constants.setConstantValue(&self.outputW, type: .float, index: 0)
-        constants.setConstantValue(&self.outputH, type: .float, index: 1)
-        constants.setConstantValue(&outputW, type: .float, index: 2)
-        constants.setConstantValue(&outputH, type: .float, index: 3)
-        finalResizePS = try device.makeComputePipelineState(function: try defaultLibrary.makeFunction(name: "CenterResize", constantValues: constants))
+        finalResizePS = try device.makeComputePipelineState(function: defaultLibrary.makeFunction(name: "CenterResize")!)
     }
     
     func encode(_ device: MTLDevice, cmdBuf: MTLCommandBuffer, input: MTLTexture) throws -> MTLTexture {
@@ -179,6 +172,13 @@ class Anime4K {
         bufferIndex = (bufferIndex + 1) % Anime4K.bufferCount
         if textureMap.count <= bufferIndex {
             textureMap.append([:])
+            let desc = MTLSamplerDescriptor()
+            desc.magFilter = .linear
+            desc.minFilter = .nearest
+            desc.sAddressMode = .clampToEdge
+            desc.tAddressMode = .clampToEdge
+            let sampler = device.makeSamplerState(descriptor: desc)!
+            samplerStates.append(sampler)
         }
         
         textureMap[bufferIndex]["MAIN"] = input
@@ -210,6 +210,7 @@ class Anime4K {
             }
             let pipelineState = pipelineStates[i]
             encoder.setComputePipelineState(pipelineState)
+            encoder.setSamplerState(samplerStates[bufferIndex], index: 0)
             for j in 0..<shader.inputTextureNames.count {
                 var textureName = shader.inputTextureNames[j]
                 if textureName == "HOOKED", let hook = shader.hook {
