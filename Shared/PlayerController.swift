@@ -72,7 +72,7 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        commandQueue = device.makeCommandQueue(maxCommandBufferCount: 3)!
+        commandQueue = device.makeCommandQueue(maxCommandBufferCount: Anime4K.bufferCount)!
         var textureCache: CVMetalTextureCache?
         guard CVMetalTextureCacheCreate(kCFAllocatorDefault, nil, device, nil, &textureCache) == kCVReturnSuccess else {
             fatalError("Failed to create texture cache")
@@ -160,7 +160,7 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
     var frameDrops = 0
     
     @objc private func readBuffer(_ sender: CADisplayLink) {
-        if inFlightFrames.load(ordering: .sequentiallyConsistent) >= 3 {
+        if inFlightFrames.load(ordering: .sequentiallyConsistent) >= Anime4K.bufferCount {
             frameDrops += 1
             return
         }
@@ -204,10 +204,6 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
             NSLog("Failed to create metal texture")
             return false
         }
-        guard let drawable = view.currentDrawable else {
-            return false
-        }
-        
         let outW = Int(view.frame.width * UIScreen.main.scale)
         let outH = Int(view.frame.height * UIScreen.main.scale)
         
@@ -225,7 +221,10 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
         guard let commandBuffer = commandQueue.makeCommandBuffer() else {
             return false
         }
-
+        
+        guard let drawable = view.currentDrawable else {
+            return false
+        }
         try! anime4K.encode(device, cmdBuf: commandBuffer, input: textureIn, output: drawable.texture)
         commandBuffer.present(drawable)
         let endEncodeTime = CACurrentMediaTime()
@@ -235,7 +234,7 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
                 let currentTime = CACurrentMediaTime()
                 if self.lastFrameTime != 0 {
                     let overhead = endEncodeTime - startRenderTime
-                    self.perfBanner.text = String(format: "CPU: %02.1fms  Queued: %d/3  Dropped: %d  In: %dx%d  Out: %dx%d  Shader: %@", self.cpuOverheadAverage.update(overhead * 1000), self.inFlightFrames.load(ordering: .sequentiallyConsistent), self.frameDrops, inW, inH, Int(outW), Int(outH), self.shader ?? "unknown")
+                    self.perfBanner.text = String(format: "CPU: %02.1fms  Queued: %d/%d  Dropped: %d  In: %dx%d  Out: %dx%d  Shader: %@", self.cpuOverheadAverage.update(overhead * 1000), self.inFlightFrames.load(ordering: .sequentiallyConsistent) + 1, Anime4K.bufferCount, self.frameDrops, inW, inH, Int(outW), Int(outH), self.shader ?? "unknown")
                 }
                 self.lastFrameTime = currentTime
             }

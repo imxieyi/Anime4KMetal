@@ -17,6 +17,11 @@ import Foundation
 import MetalKit
 
 class Anime4K {
+    #if targetEnvironment(macCatalyst)
+    static let bufferCount = 3
+    #else
+    static let bufferCount = 2
+    #endif
     
     let name: String
     let shaders: [MPVShader]
@@ -83,7 +88,7 @@ class Anime4K {
         guard pipelineStates.count == shaders.count else {
             return
         }
-        bufferIndex = (bufferIndex + 1) % 3
+        bufferIndex = (bufferIndex + 1) % Anime4K.bufferCount
         if textureMap.count <= bufferIndex {
             textureMap.append([:])
         }
