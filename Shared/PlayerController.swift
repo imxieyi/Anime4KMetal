@@ -170,7 +170,6 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
         }
     }
     
-    let fpsAverage = Average(count: 10)
     let cpuOverheadAverage = Average(count: 10)
     let gpuTimeAverage = Average(count: 10)
     
@@ -222,10 +221,9 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
             DispatchQueue.main.async {
                 let currentTime = CACurrentMediaTime()
                 if self.lastFrameTime != 0 {
-                    let fps = 1.0 / (currentTime - self.lastFrameTime)
                     let overhead = endEncodeTime - startRenderTime
                     let frameTime = currentTime - scheduleTime
-                    self.perfBanner.text = String(format: "FPS: %02.2f  CPU: %02.1fms  GPU: %02.1fms  In: %dx%d  Out: %dx%d  Shader: %@  Dev: %@", self.fpsAverage.update(fps), self.cpuOverheadAverage.update(overhead * 1000), self.gpuTimeAverage.update(frameTime * 1000), inW, inH, Int(outW), Int(outH), self.shader ?? "unknown", self.device.name)
+                    self.perfBanner.text = String(format: "CPU: %02.1fms  GPU: %02.1fms  In: %dx%d  Out: %dx%d  Shader: %@  Dev: %@", self.cpuOverheadAverage.update(overhead * 1000), self.gpuTimeAverage.update(frameTime * 1000), inW, inH, Int(outW), Int(outH), self.shader ?? "unknown", self.device.name)
                 }
                 self.lastFrameTime = currentTime
             }
