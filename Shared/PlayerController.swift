@@ -26,7 +26,6 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
     private var perfBanner: UILabel!
     
     private var commandQueue: MTLCommandQueue!
-    private var pipelineState: MTLComputePipelineState!
     
     private var pixelBuffer: CVPixelBuffer?
     private var textureCache: CVMetalTextureCache!
@@ -152,14 +151,18 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         isShowing = false
-        player?.pause()
+        anime4K = nil
+        player?.replaceCurrentItem(with: nil)
+        displayLink.invalidate()
     }
     
     var inFlightFrames = ManagedAtomic(0)
+    var frameDrops = 0
     
     @objc private func readBuffer(_ sender: CADisplayLink) {
         if inFlightFrames.load(ordering: .sequentiallyConsistent) >= 3 {
             print("Dropping frame")
+            frameDrops += 1
             return
         }
         let nextVSync = sender.timestamp + sender.duration
@@ -171,22 +174,24 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
             return
         }
         self.pixelBuffer = pixelBuffer
+        inFlightFrames.wrappingIncrement(ordering: .sequentiallyConsistent)
         mtkView.setNeedsDisplay()
     }
     
     func draw(in view: MTKView) {
         autoreleasepool {
-            render(in: view)
+            if !render(in: view) {
+                self.inFlightFrames.wrappingDecrement(ordering: .sequentiallyConsistent)
+            }
         }
     }
     
     let cpuOverheadAverage = Average(count: 10)
-    let gpuTimeAverage = Average(count: 10)
     
-    private func render(in view: MTKView) {
+    private func render(in view: MTKView) -> Bool {
         let startRenderTime = CACurrentMediaTime()
         guard let pixelBuffer = self.pixelBuffer else {
-            return
+            return false
         }
         
         let inW = CVPixelBufferGetWidth(pixelBuffer)
@@ -196,10 +201,10 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
         CVMetalTextureCacheCreateTextureFromImage(kCFAllocatorDefault, textureCache, pixelBuffer, nil, .bgra8Unorm, inW, inH, 0, &cvTexture)
         guard cvTexture != nil, let textureIn = CVMetalTextureGetTexture(cvTexture!) else {
             NSLog("Failed to create metal texture")
-            return
+            return false
         }
         guard let drawable = view.currentDrawable else {
-            return
+            return false
         }
         
         let outW = Int(view.frame.width * UIScreen.main.scale)
@@ -207,7 +212,7 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
         
         if self.inW != inW || self.inH != inH || self.outW != outW || self.outH != outH {
             guard anime4K != nil else {
-                return
+                return false
             }
             self.inW = inW
             self.inH = inH
@@ -215,32 +220,27 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
             self.outH = outH
             try! anime4K.compileShaders(device, inW: inW, inH: inH, outW: outW, outH: outH)
         }
-        inFlightFrames.wrappingIncrement(ordering: .sequentiallyConsistent)
 
         guard let commandBuffer = commandQueue.makeCommandBuffer() else {
-            return
+            return false
         }
 
         try! anime4K.encode(device, cmdBuf: commandBuffer, input: textureIn, output: drawable.texture)
         commandBuffer.present(drawable)
         let endEncodeTime = CACurrentMediaTime()
-        var scheduleTime: Double = 0
-        commandBuffer.addScheduledHandler { _ in
-            scheduleTime = CACurrentMediaTime()
-        }
         commandBuffer.addCompletedHandler { _ in
             self.inFlightFrames.wrappingDecrement(ordering: .sequentiallyConsistent)
             DispatchQueue.main.async {
                 let currentTime = CACurrentMediaTime()
                 if self.lastFrameTime != 0 {
                     let overhead = endEncodeTime - startRenderTime
-                    let frameTime = currentTime - scheduleTime
-                    self.perfBanner.text = String(format: "CPU: %02.1fms  GPU: %02.1fms  In: %dx%d  Out: %dx%d  Shader: %@  Dev: %@", self.cpuOverheadAverage.update(overhead * 1000), self.gpuTimeAverage.update(frameTime * 1000), inW, inH, Int(outW), Int(outH), self.shader ?? "unknown", self.device.name)
+                    self.perfBanner.text = String(format: "CPU: %02.1fms  Queued: %d/3  Dropped: %d  In: %dx%d  Out: %dx%d  Shader: %@", self.cpuOverheadAverage.update(overhead * 1000), self.inFlightFrames.load(ordering: .sequentiallyConsistent), self.frameDrops, inW, inH, Int(outW), Int(outH), self.shader ?? "unknown")
                 }
                 self.lastFrameTime = currentTime
             }
         }
         commandBuffer.commit()
+        return true
     }
     
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {

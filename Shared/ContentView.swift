@@ -22,8 +22,7 @@ struct ContentView: View {
     @State var selected: String = "Upscale+Denoise/Anime4K_Upscale_Denoise_CNN_x2_S.glsl"
     @State var videoUrl: String = ""
     @State var localFileUrl: URL = URL(fileURLWithPath: "file:///")
-    @State var showRemotePlayer = false
-    @State var showLocalPlayer = false
+    @State var playerViewItem: PlayerViewItem? = nil
     @State var showFileImporter = false
     
     var body: some View {
@@ -35,7 +34,7 @@ struct ContentView: View {
         form
         .fileImporter(isPresented: $showFileImporter, allowedContentTypes: [.movie]) { result in
             localFileUrl = try! result.get()
-            showLocalPlayer.toggle()
+            playerViewItem = .local
         }
         #endif
     }
@@ -57,18 +56,15 @@ struct ContentView: View {
                         UserDefaults.standard.set(videoUrl, forKey: "video_url")
                     }
                 Button("Play") {
-                    showRemotePlayer.toggle()
-                }.fullScreenCover(isPresented: $showRemotePlayer, onDismiss: nil) {
-                    PlayerView(shader: selected, videoUrl: URL(string: videoUrl)!)
-                }.disabled(videoUrl.count == 0)
+                    playerViewItem = .remote
+                }
+                .disabled(videoUrl.count == 0)
             } header: {
                 Text("Remote file")
             }
             Section {
                 Button("Select file") {
                     showFileImporter.toggle()
-                }.fullScreenCover(isPresented: $showLocalPlayer, onDismiss: nil) {
-                    PlayerView(shader: selected, videoUrl: localFileUrl)
                 }
             } header: {
                 Text("Local file")
@@ -86,7 +82,30 @@ struct ContentView: View {
             }
             shaders = shaders.sorted()
         }
+        .fullScreenCover(item: $playerViewItem) { item in
+            if item == .remote {
+                if #available(tvOS 15.0, *) {
+                    PlayerView(shader: selected, videoUrl: URL(string: videoUrl)!)
+                        .ignoresSafeArea()
+                } else {
+                    PlayerView(shader: selected, videoUrl: URL(string: videoUrl)!)
+                }
+            } else if item == .local {
+                if #available(tvOS 15.0, *) {
+                    PlayerView(shader: selected, videoUrl: localFileUrl)
+                        .ignoresSafeArea()
+                } else {
+                    PlayerView(shader: selected, videoUrl: localFileUrl)
+                }
+            }
+        }
     }
+}
+
+enum PlayerViewItem: String, Identifiable {
+    var id: String { rawValue }
+    case remote
+    case local
 }
 
 struct ContentView_Previews: PreviewProvider {
