@@ -19,7 +19,7 @@ import Combine
 struct ContentView: View {
     
     @State var shaders: [String] = []
-    @State var selected: String = "Upscale+Denoise/Anime4K_Upscale_Denoise_CNN_x2_S.glsl"
+    @State var selected: [String] = []
     @State var videoUrl: String = ""
     @State var localFileUrl: URL = URL(fileURLWithPath: "file:///")
     @State var playerViewItem: PlayerViewItem? = nil
@@ -42,9 +42,31 @@ struct ContentView: View {
     var form: some View {
         Form {
             Section {
-                Picker("Pick a shader", selection: $selected) {
-                    ForEach(shaders, id: \.self) {
-                        Text($0)
+                ForEach(0..<selected.count, id: \.self) { i in
+                    Text(selected[i])
+                        .contextMenu {
+                            Button("Delete", role: .destructive) {
+                                selected.remove(at: i)
+                            }
+                        }
+                }
+                .onDelete { offsets in
+                    selected.remove(atOffsets: offsets)
+                }
+                .onMove { from, to in
+                    selected.move(fromOffsets: from, toOffset: to)
+                }
+                HStack {
+                    Text("Add shader")
+                    Spacer()
+                    Menu("Add shader") {
+                        ForEach(0..<shaders.count, id: \.self) { i in
+                            Button {
+                                selected.append(shaders[i])
+                            } label: {
+                                Text(shaders[i])
+                            }
+                        }
                     }
                 }
             } header: {
@@ -69,7 +91,8 @@ struct ContentView: View {
             } header: {
                 Text("Local file")
             }
-        }.onAppear {
+        }
+        .onAppear {
             videoUrl = UserDefaults.standard.string(forKey: "video_url") ?? ""
             shaders.removeAll()
             let glslDir = Bundle.main.url(forResource: "glsl", withExtension: nil)!
@@ -85,17 +108,17 @@ struct ContentView: View {
         .fullScreenCover(item: $playerViewItem) { item in
             if item == .remote {
                 #if os(tvOS)
-                PlayerView(shader: selected, videoUrl: URL(string: videoUrl)!)
+                PlayerView(shaders: selected, videoUrl: URL(string: videoUrl)!)
                     .ignoresSafeArea()
                 #else
-                PlayerView(shader: selected, videoUrl: URL(string: videoUrl)!)
+                PlayerView(shaders: selected, videoUrl: URL(string: videoUrl)!)
                 #endif
             } else if item == .local {
                 #if os(tvOS)
-                PlayerView(shader: selected, videoUrl: localFileUrl)
+                PlayerView(shaders: selected, videoUrl: localFileUrl)
                     .ignoresSafeArea()
                 #else
-                PlayerView(shader: selected, videoUrl: localFileUrl)
+                PlayerView(shaders: selected, videoUrl: localFileUrl)
                 #endif
             }
         }

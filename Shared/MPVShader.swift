@@ -181,6 +181,9 @@ kernel void \(functionName)(\(entryArgs)) {
                     current = MPVShader(splitted[1])
                 case "HOOK":
                     current.hook = splitted[1]
+                    if current.hook == "PREKERNEL" {
+                        current.hook = "MAIN"
+                    }
                 case "BIND":
                     current.binds.append(splitted[1])
                 case "SAVE":

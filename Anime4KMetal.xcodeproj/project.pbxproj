@@ -39,6 +39,8 @@
 		8A8FBD2429CED13100BD0722 /* Atomics in Frameworks */ = {isa = PBXBuildFile; productRef = 8A8FBD2329CED13100BD0722 /* Atomics */; };
 		8AA22ECC29CF6A96004FC764 /* CenterResize.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8AA22ECB29CF6A96004FC764 /* CenterResize.metal */; };
 		8AA22ECD29CF6A96004FC764 /* CenterResize.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8AA22ECB29CF6A96004FC764 /* CenterResize.metal */; };
+		8AA22ECF29CF748C004FC764 /* Atomics in Frameworks */ = {isa = PBXBuildFile; productRef = 8AA22ECE29CF748C004FC764 /* Atomics */; };
+		8AA22ED129CF748F004FC764 /* Atomics in Frameworks */ = {isa = PBXBuildFile; productRef = 8AA22ED029CF748F004FC764 /* Atomics */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -92,6 +94,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8AA22ED129CF748F004FC764 /* Atomics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -107,6 +110,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8AA22ECF29CF748C004FC764 /* Atomics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -206,6 +210,9 @@
 				8A07C93427783F880023EC36 /* PBXTargetDependency */,
 			);
 			name = "Tests tvOS";
+			packageProductDependencies = (
+				8AA22ED029CF748F004FC764 /* Atomics */,
+			);
 			productName = Anime4KMetalUITests;
 			productReference = 8A07C93227783F880023EC36 /* Tests tvOS.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -244,6 +251,9 @@
 				8A0DF67627782DD700C09201 /* PBXTargetDependency */,
 			);
 			name = "Tests iOS";
+			packageProductDependencies = (
+				8AA22ECE29CF748C004FC764 /* Atomics */,
+			);
 			productName = "Tests iOS";
 			productReference = 8A0DF67427782DD700C09201 /* Tests iOS.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -789,6 +799,16 @@
 			productName = Atomics;
 		};
 		8A8FBD2329CED13100BD0722 /* Atomics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8A8FBD1F29CED11B00BD0722 /* XCRemoteSwiftPackageReference "swift-atomics" */;
+			productName = Atomics;
+		};
+		8AA22ECE29CF748C004FC764 /* Atomics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8A8FBD1F29CED11B00BD0722 /* XCRemoteSwiftPackageReference "swift-atomics" */;
+			productName = Atomics;
+		};
+		8AA22ED029CF748F004FC764 /* Atomics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8A8FBD1F29CED11B00BD0722 /* XCRemoteSwiftPackageReference "swift-atomics" */;
 			productName = Atomics;

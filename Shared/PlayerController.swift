@@ -32,7 +32,7 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
     
     private var lastFrameTime: Double = 0
     
-    private var anime4K: Anime4K!
+    private var anime4Ks: [Anime4K] = []
     
     private var inW: Int = 0
     private var inH: Int = 0
@@ -49,11 +49,12 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
         }
     }
     
-    var shader: String? {
+    var shaders: [String] = [] {
         didSet {
-            if let shader = shader, shader.count > 0 {
+            anime4Ks.removeAll()
+            for shader in shaders {
                 let splits = shader.split(separator: "/")
-                anime4K = try! Anime4K(String(splits[1]), subdir: String(splits[0]), device: device)
+                anime4Ks.append(try! Anime4K(String(splits[1]), subdir: String(splits[0]), device: device))
             }
         }
     }
@@ -108,13 +109,13 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
         perfBanner.textColor = .white
         perfBanner.alpha = 0.5
         perfBanner.textAlignment = .left
-        perfBanner.font = .monospacedSystemFont(ofSize: 20, weight: .regular)
+        perfBanner.font = .monospacedSystemFont(ofSize: 13, weight: .thin)
         view.addConstraints([
             NSLayoutConstraint(item: mtkView!, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: 0),
             NSLayoutConstraint(item: mtkView!, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0),
             NSLayoutConstraint(item: mtkView!, attribute: .leading, relatedBy: .equal, toItem: view, attribute: .leading, multiplier: 1, constant: 0),
             NSLayoutConstraint(item: mtkView!, attribute: .trailing, relatedBy: .equal, toItem: view, attribute: .trailing, multiplier: 1, constant: 0),
-            NSLayoutConstraint(item: perfBanner!, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 28),
+            NSLayoutConstraint(item: perfBanner!, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 20),
             NSLayoutConstraint(item: perfBanner!, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0),
             NSLayoutConstraint(item: perfBanner!, attribute: .leading, relatedBy: .equal, toItem: view, attribute: .leading, multiplier: 1, constant: 0),
             NSLayoutConstraint(item: perfBanner!, attribute: .trailing, relatedBy: .equal, toItem: view, attribute: .trailing, multiplier: 1, constant: 0),
@@ -152,7 +153,7 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         isShowing = false
-        anime4K = nil
+        anime4Ks.removeAll()
         player?.replaceCurrentItem(with: nil)
         displayLink.invalidate()
         videoUrl?.stopAccessingSecurityScopedResource()
@@ -210,14 +211,20 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
         let outH = Int(view.frame.height * UIScreen.main.scale)
         
         if self.inW != inW || self.inH != inH || self.outW != outW || self.outH != outH {
-            guard anime4K != nil else {
+            guard !anime4Ks.isEmpty else {
                 return false
             }
             self.inW = inW
             self.inH = inH
             self.outW = outW
             self.outH = outH
-            try! anime4K.compileShaders(device, inW: inW, inH: inH, outW: outW, outH: outH)
+            var currentInW = inW
+            var currentInH = inH
+            for anime4K in anime4Ks {
+                try! anime4K.compileShaders(device, inW: currentInW, inH: currentInH, outW: outW, outH: outH)
+                currentInW = Int(anime4K.outputW)
+                currentInH = Int(anime4K.outputH)
+            }
         }
 
         guard let commandBuffer = commandQueue.makeCommandBuffer() else {
@@ -227,16 +234,24 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
         guard let drawable = view.currentDrawable else {
             return false
         }
-        try! anime4K.encode(device, cmdBuf: commandBuffer, input: textureIn, output: drawable.texture)
+        var currentInTex = textureIn
+        for i in 0..<anime4Ks.count - 1 {
+            currentInTex = try! anime4Ks[i].encode(device, cmdBuf: commandBuffer, input: currentInTex)
+        }
+        try! anime4Ks[anime4Ks.count - 1].encode(device, cmdBuf: commandBuffer, input: currentInTex, output: drawable.texture)
         commandBuffer.present(drawable)
         let endEncodeTime = CACurrentMediaTime()
+        
+        let outputW = Int(anime4Ks[anime4Ks.count - 1].outputW)
+        let outputH = Int(anime4Ks[anime4Ks.count - 1].outputH)
+        
         commandBuffer.addCompletedHandler { _ in
             self.inFlightFrames.wrappingDecrement(ordering: .sequentiallyConsistent)
             DispatchQueue.main.async {
                 let currentTime = CACurrentMediaTime()
                 if self.lastFrameTime != 0 {
                     let overhead = endEncodeTime - startRenderTime
-                    self.perfBanner.text = String(format: "CPU: %02.1fms  Queued: %d/%d  Dropped: %d  In: %dx%d  Out: %dx%d  Shader: %@", self.cpuOverheadAverage.update(overhead * 1000), self.inFlightFrames.load(ordering: .sequentiallyConsistent) + 1, Anime4K.bufferCount, self.frameDrops, inW, inH, Int(self.anime4K.outputW), Int(self.anime4K.outputH), self.shader ?? "unknown")
+                    self.perfBanner.text = String(format: "CPU: %02.1fms  Queued: %d/%d  Dropped: %d  Scale: %dx%d->%dx%d  Display: %dx%d  Shaders: %d", self.cpuOverheadAverage.update(overhead * 1000), self.inFlightFrames.load(ordering: .sequentiallyConsistent) + 1, Anime4K.bufferCount, self.frameDrops, inW, inH, outputW, outputH, outW, outH, self.shaders.count)
                 }
                 self.lastFrameTime = currentTime
             }

@@ -75,8 +75,6 @@ class Anime4K {
             }
             self.outputW = outputW
             self.outputH = outputH
-            var textureW = outputW
-            var textureH = outputH
             let constants = MTLFunctionConstantValues()
             constants.setConstantValue(&inputW, type: .float, index: 0)
             constants.setConstantValue(&inputH, type: .float, index: 1)
@@ -94,9 +92,9 @@ class Anime4K {
         finalResizePS = try device.makeComputePipelineState(function: try defaultLibrary.makeFunction(name: "CenterResize", constantValues: constants))
     }
     
-    func encode(_ device: MTLDevice, cmdBuf: MTLCommandBuffer, input: MTLTexture, output: MTLTexture) throws {
+    func encode(_ device: MTLDevice, cmdBuf: MTLCommandBuffer, input: MTLTexture) throws -> MTLTexture {
         guard pipelineStates.count == shaders.count else {
-            return
+            throw Anime4KError.encoderFail("Pipeline state count \(pipelineStates.count) mismatch shader count \(shaders.count)")
         }
         bufferIndex = (bufferIndex + 1) % Anime4K.bufferCount
         if textureMap.count <= bufferIndex {
@@ -104,6 +102,7 @@ class Anime4K {
         }
         
         textureMap[bufferIndex]["MAIN"] = input
+        textureMap[bufferIndex]["NATIVE"] = input
         
         let desc = MTLTextureDescriptor()
         desc.width = Int(outputW)
@@ -168,9 +167,18 @@ class Anime4K {
             encoder.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
             encoder.endEncoding()
         }
+        return textureMap[bufferIndex]["output"]!
+    }
+    
+    func encode(_ device: MTLDevice, cmdBuf: MTLCommandBuffer, input: MTLTexture, output: MTLTexture) throws {
+        guard pipelineStates.count == shaders.count else {
+            return
+        }
+        
+        let outTex = try encode(device, cmdBuf: cmdBuf, input: input)
         let encoder = cmdBuf.makeComputeCommandEncoder()!
         encoder.setComputePipelineState(finalResizePS)
-        encoder.setTexture(textureMap[bufferIndex]["output"], index: 0)
+        encoder.setTexture(outTex, index: 0)
         encoder.setTexture(output, index: 1)
         let w = finalResizePS.threadExecutionWidth
         let h = finalResizePS.maxTotalThreadsPerThreadgroup / w

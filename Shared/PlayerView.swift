@@ -18,24 +18,20 @@ import SwiftUI
 
 struct PlayerView: UIViewControllerRepresentable {
     
-    let shader: String?
+    let shaders: [String]
     let videoUrl: URL
     
     func makeUIViewController(context: Context) -> PlayerController {
         let controller = PlayerController()
         controller.device = MTLCreateSystemDefaultDevice()!
         controller.videoUrl = videoUrl
-        if let shader = shader {
-            controller.shader = shader
-        }
+        controller.shaders = shaders
         return controller
     }
     
     func updateUIViewController(_ uiViewController: PlayerController, context: Context) {
         uiViewController.videoUrl = videoUrl
-        if let shader = shader {
-            uiViewController.shader = shader
-        }
+        uiViewController.shaders = shaders
     }
     
 }
