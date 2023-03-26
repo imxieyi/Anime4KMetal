@@ -31,6 +31,12 @@ struct ContentView: View {
         NavigationView {
             form
         }
+        #elseif targetEnvironment(macCatalyst)
+        form
+            .fileImporter(isPresented: $showFileImporter, allowedContentTypes: [.movie]) { result in
+                localFileUrl = try! result.get()
+                playerViewItem = .local
+            }
         #else
         NavigationView {
             form
@@ -264,7 +270,7 @@ struct ContentView: View {
 
 struct HideOverlayModifier: ViewModifier {
     func body(content: Content) -> some View {
-        if #available(iOS 16.0, *) {
+        if #available(iOS 16.0, tvOS 16.0, *) {
             content.persistentSystemOverlays(.hidden)
         } else {
             content
