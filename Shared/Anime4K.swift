@@ -32,7 +32,8 @@ class Anime4K {
     var pipelineStates: [MTLComputePipelineState]
     var finalResizePS: MTLComputePipelineState!
     var textureMap: [[String : MTLTexture]]
-    var samplerStates: [MTLSamplerState]
+    var nearestSamplerStates: [MTLSamplerState]
+    var linearSamplerStates: [MTLSamplerState]
     var sizeMap: [String: (Float, Float)]
     var bufferIndex = -1
     
@@ -46,7 +47,8 @@ class Anime4K {
     init(_ name: String, subdir: String, device: MTLDevice) throws {
         self.name = name
         self.enabledShaders = []
-        self.samplerStates = []
+        self.nearestSamplerStates = []
+        self.linearSamplerStates = []
         self.pipelineStates = []
         self.textureMap = []
         self.sizeMap = [:]
@@ -62,16 +64,15 @@ class Anime4K {
         libraries = try shaders.map { shader in
             print("Metal code for " + shader.name)
             print(shader.metalCode)
-            let options = MTLCompileOptions()
-            options.fastMathEnabled = false
-            return try device.makeLibrary(source: shader.metalCode, options: options)
+            return try device.makeLibrary(source: shader.metalCode, options: nil)
         }
         defaultLibrary = try device.makeDefaultLibrary(bundle: .main)
     }
     
     func compileShaders(_ device: MTLDevice, videoInW: Int, videoInH: Int, textureInW: Int, textureInH: Int, displayOutW: Int, displayOutH: Int) throws {
         enabledShaders.removeAll()
-        samplerStates.removeAll()
+        nearestSamplerStates.removeAll()
+        linearSamplerStates.removeAll()
         pipelineStates.removeAll()
         textureMap.removeAll()
         sizeMap.removeAll()
@@ -79,11 +80,11 @@ class Anime4K {
         self.textureInW = Float(textureInW)
         self.textureInH = Float(textureInH)
         let displayScale = min(Float(displayOutW) / Float(videoInW), Float(displayOutH) / Float(videoInH))
-        displayActualW = displayScale * Float(videoInW)
-        displayActualH = displayScale * Float(videoInH)
+        displayActualW = round(displayScale * Float(videoInW))
+        displayActualH = round(displayScale * Float(videoInH))
         self.outputW = self.textureInW
         self.outputH = self.textureInH
-        sizeMap["MAIN"] = (Float(videoInW), Float(videoInH))
+        sizeMap["MAIN"] = (Float(textureInW), Float(textureInH))
         sizeMap["NATIVE"] = (Float(videoInW), Float(videoInH))
         sizeMap["OUTPUT"] = (Float(displayActualW), Float(displayActualH))
         for i in 0..<shaders.count {
@@ -173,12 +174,16 @@ class Anime4K {
         if textureMap.count <= bufferIndex {
             textureMap.append([:])
             let desc = MTLSamplerDescriptor()
-            desc.magFilter = .linear
+            desc.magFilter = .nearest
             desc.minFilter = .nearest
             desc.sAddressMode = .clampToEdge
             desc.tAddressMode = .clampToEdge
-            let sampler = device.makeSamplerState(descriptor: desc)!
-            samplerStates.append(sampler)
+            let nearestSampler = device.makeSamplerState(descriptor: desc)!
+            nearestSamplerStates.append(nearestSampler)
+            desc.magFilter = .linear
+            desc.minFilter = .linear
+            let linearSampler = device.makeSamplerState(descriptor: desc)!
+            linearSamplerStates.append(linearSampler)
         }
         
         textureMap[bufferIndex]["MAIN"] = input
@@ -210,7 +215,11 @@ class Anime4K {
             }
             let pipelineState = pipelineStates[i]
             encoder.setComputePipelineState(pipelineState)
-            encoder.setSamplerState(samplerStates[bufferIndex], index: 0)
+            if outputW >= textureInW {
+                encoder.setSamplerState(nearestSamplerStates[bufferIndex], index: 0)
+            } else {
+                encoder.setSamplerState(linearSamplerStates[bufferIndex], index: 0)
+            }
             for j in 0..<shader.inputTextureNames.count {
                 var textureName = shader.inputTextureNames[j]
                 if textureName == "HOOKED", let hook = shader.hook {

@@ -18,11 +18,11 @@ kernel void CenterResize(texture2d<float, access::sample> input [[texture(0)]],
     float outW = output.get_width();
     float outH = output.get_height();
     float scale = min(outW / inW, outH / inH);
-    float outValidW = inW * scale;
-    float outValidH = inH * scale;
-    float outPadW = (outW - outValidW) / 2;
-    float outPadH = (outH - outValidH) / 2;
-    float2 nPos = float2((float(gid.x) - outPadW) / outValidW, (float(gid.y) - outPadH) / outValidH);
+    float outValidW = round(inW * scale);
+    float outValidH = round(inH * scale);
+    float outPadW = round((outW - outValidW) / 2);
+    float outPadH = round((outH - outValidH) / 2);
+    float2 nPos = float2((float(gid.x) - outPadW + 0.5) / (outValidW), (float(gid.y) - outPadH + 0.5) / (outValidH));
     if (nPos.x < 0 || nPos.x > 1 || nPos.y < 0 || nPos.y > 1) {
         output.write(float4(0), gid);
         return;

@@ -61,11 +61,9 @@ using mat4 = float4x4;
         binds.forEach { bind in
             bindSizeIndex += 1
             header = header + """
-#define \(bind)_pixsize float2(\(bind).get_width(), \(bind).get_height())
-
 #define \(bind)_pos mtlPos
-#define \(bind)_pt (vec2(1, 1) / \(bind)_pixsize)
-#define \(bind)_size vec2(1, 1)
+#define \(bind)_size float2(\(bind).get_width(), \(bind).get_height())
+#define \(bind)_pt (vec2(1, 1) / \(bind)_size)
 #define \(bind)_tex(pos) \(bind).sample(textureSampler, pos)
 #define \(bind)_texOff(off) \(bind)_tex(\(bind)_pos + \(bind)_pt * vec2(off))
 
@@ -75,7 +73,7 @@ using mat4 = float4x4;
             header = header + """
 #define MAIN_pos mtlPos
 #define MAIN_pt (vec2(1, 1) / vec2(MAIN.get_width(), MAIN.get_height()))
-#define MAIN_size vec2(1, 1)
+#define MAIN_size vec2(MAIN.get_width(), MAIN.get_height())
 #define MAIN_tex(pos) MAIN.sample(textureSampler, pos)
 #define MAIN_texOff(off) MAIN_tex(MAIN_pos + MAIN_pt * vec2(off))
 
