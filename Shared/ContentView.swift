@@ -57,6 +57,18 @@ struct ContentView: View {
                 .onMove { from, to in
                     selected.move(fromOffsets: from, toOffset: to)
                 }
+                #if os(tvOS)
+                TVMenu(title: "Add shader", count: shaders.count) { i in
+                    return shaders[i]
+                } action: { i in
+                    selected.append(shaders[i])
+                }
+                TVMenu(title: "Use preset", count: presets.count) { i in
+                    return presets[i].0
+                } action: { i in
+                    selected = presets[i].1
+                }
+                #else
                 HStack {
                     Text("Add shader")
                     Spacer()
@@ -83,6 +95,7 @@ struct ContentView: View {
                         }
                     }
                 }
+                #endif
             } header: {
                 Text("Shader selection")
             }

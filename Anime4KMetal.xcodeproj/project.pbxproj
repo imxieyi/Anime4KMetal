@@ -41,6 +41,8 @@
 		8AA22ECD29CF6A96004FC764 /* CenterResize.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8AA22ECB29CF6A96004FC764 /* CenterResize.metal */; };
 		8AA22ECF29CF748C004FC764 /* Atomics in Frameworks */ = {isa = PBXBuildFile; productRef = 8AA22ECE29CF748C004FC764 /* Atomics */; };
 		8AA22ED129CF748F004FC764 /* Atomics in Frameworks */ = {isa = PBXBuildFile; productRef = 8AA22ED029CF748F004FC764 /* Atomics */; };
+		8AA22ED329CFD067004FC764 /* TVMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA22ED229CFD067004FC764 /* TVMenu.swift */; };
+		8AA22ED429CFD067004FC764 /* TVMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA22ED229CFD067004FC764 /* TVMenu.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,6 +80,7 @@
 		8A0DF6A127782E0400C09201 /* MPVShader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPVShader.swift; sourceTree = "<group>"; };
 		8A0DF6A627782E4100C09201 /* MPVShaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPVShaderTests.swift; sourceTree = "<group>"; };
 		8AA22ECB29CF6A96004FC764 /* CenterResize.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = CenterResize.metal; sourceTree = "<group>"; };
+		8AA22ED229CFD067004FC764 /* TVMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVMenu.swift; sourceTree = "<group>"; };
 		8AECBC1727790AA200922C26 /* Anime4KMetal (iOS).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Anime4KMetal (iOS).entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -140,6 +143,7 @@
 				8A0DF6A127782E0400C09201 /* MPVShader.swift */,
 				8A07C95727784C680023EC36 /* Anime4K.swift */,
 				8A07C95127784B9F0023EC36 /* PlayerController.swift */,
+				8AA22ED229CFD067004FC764 /* TVMenu.swift */,
 				8A07C9652778B2570023EC36 /* PlayerView.swift */,
 				8A07C95E2778544C0023EC36 /* Average.swift */,
 				8AA22ECB29CF6A96004FC764 /* CenterResize.metal */,
@@ -353,6 +357,7 @@
 				8A07C95C277854320023EC36 /* Anime4K.swift in Sources */,
 				8A07C94727783FD60023EC36 /* Anime4KMetalApp.swift in Sources */,
 				8A07C9672778B2570023EC36 /* PlayerView.swift in Sources */,
+				8AA22ED429CFD067004FC764 /* TVMenu.swift in Sources */,
 				8A07C94427783FC10023EC36 /* MPVShader.swift in Sources */,
 				8A07C9602778544C0023EC36 /* Average.swift in Sources */,
 				8A07C95627784C2D0023EC36 /* PlayerController.swift in Sources */,
@@ -379,6 +384,7 @@
 				8A07C95827784C680023EC36 /* Anime4K.swift in Sources */,
 				8A0DF68A27782DD700C09201 /* ContentView.swift in Sources */,
 				8A07C9662778B2570023EC36 /* PlayerView.swift in Sources */,
+				8AA22ED329CFD067004FC764 /* TVMenu.swift in Sources */,
 				8A0DF6A227782E0500C09201 /* MPVShader.swift in Sources */,
 				8A07C95F2778544C0023EC36 /* Average.swift in Sources */,
 				8A07C95227784B9F0023EC36 /* PlayerController.swift in Sources */,
