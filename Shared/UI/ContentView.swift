@@ -17,26 +17,27 @@ import SwiftUI
 import Combine
 
 struct ContentView: View {
-    
     @State var shaders: [String] = []
-    @State var selected: [String] = [
-    ]
     @State var videoUrl: String = ""
     @State var localFileUrl: URL = URL(fileURLWithPath: "file:///")
     @State var playerViewItem: PlayerViewItem? = nil
     @State var showFileImporter = false
+    
+    @StateObject var config = UserConfig()
     
     var body: some View {
         #if os(tvOS)
         NavigationView {
             form
         }
+        .environmentObject(config)
         #elseif targetEnvironment(macCatalyst)
         form
             .fileImporter(isPresented: $showFileImporter, allowedContentTypes: [.movie]) { result in
                 localFileUrl = try! result.get()
                 playerViewItem = .local
             }
+            .environmentObject(config)
         #else
         NavigationView {
             form
@@ -50,36 +51,37 @@ struct ContentView: View {
         .navigationViewStyle(.stack)
         .statusBarHidden()
         .modifier(HideOverlayModifier())
+        .environmentObject(config)
         #endif
     }
     
     var form: some View {
         Form {
             Section {
-                ForEach(0..<selected.count, id: \.self) { i in
-                    Text(selected[i])
+                ForEach(0..<config.selected.count, id: \.self) { i in
+                    Text(config.selected[i])
                         .contextMenu {
                             Button("Delete", role: .destructive) {
-                                selected.remove(at: i)
+                                config.selected.remove(at: i)
                             }
                         }
                 }
                 .onDelete { offsets in
-                    selected.remove(atOffsets: offsets)
+                    config.selected.remove(atOffsets: offsets)
                 }
                 .onMove { from, to in
-                    selected.move(fromOffsets: from, toOffset: to)
+                    config.selected.move(fromOffsets: from, toOffset: to)
                 }
                 #if os(tvOS)
                 TVMenu(title: "Add shader", count: shaders.count) { i in
                     return shaders[i]
                 } action: { i in
-                    selected.append(shaders[i])
+                    config.selected.append(shaders[i])
                 }
                 TVMenu(title: "Use preset", count: presets.count) { i in
                     return presets[i].0
                 } action: { i in
-                    selected = presets[i].1
+                    config.selected = presets[i].1
                 }
                 #else
                 HStack {
@@ -88,7 +90,7 @@ struct ContentView: View {
                     Menu("Add shader") {
                         ForEach(0..<shaders.count, id: \.self) { i in
                             Button {
-                                selected.append(shaders[i])
+                                config.selected.append(shaders[i])
                             } label: {
                                 Text(shaders[i])
                             }
@@ -101,7 +103,7 @@ struct ContentView: View {
                     Menu("Use preset") {
                         ForEach(0..<presets.count, id: \.self) { i in
                             Button {
-                                selected = presets[i].1
+                                config.selected = presets[i].1
                             } label: {
                                 Text(presets[i].0)
                             }
@@ -111,6 +113,13 @@ struct ContentView: View {
                 #endif
             } header: {
                 Text("Shader selection")
+            }
+            Section {
+                Toggle(isOn: $config.showPerfOverlay) {
+                    Text("Performance overlay")
+                }
+            } header: {
+                Text("Debug")
             }
             Section {
                 TextField("Input URL", text: $videoUrl)
@@ -148,19 +157,19 @@ struct ContentView: View {
         .fullScreenCover(item: $playerViewItem) { item in
             if item == .remote {
                 #if os(tvOS)
-                PlayerView(shaders: selected, videoUrl: URL(string: videoUrl)!)
+                PlayerView(shaders: config.selected, videoUrl: URL(string: videoUrl)!)
                     .ignoresSafeArea()
                 #else
-                PlayerView(shaders: selected, videoUrl: URL(string: videoUrl)!)
+                PlayerView(shaders: config.selected, videoUrl: URL(string: videoUrl)!)
                     .statusBarHidden()
                     .modifier(HideOverlayModifier())
                 #endif
             } else if item == .local {
                 #if os(tvOS)
-                PlayerView(shaders: selected, videoUrl: localFileUrl)
+                PlayerView(shaders: config.selected, videoUrl: localFileUrl)
                     .ignoresSafeArea()
                 #else
-                PlayerView(shaders: selected, videoUrl: localFileUrl)
+                PlayerView(shaders: config.selected, videoUrl: localFileUrl)
                     .statusBarHidden()
                     .modifier(HideOverlayModifier())
                 #endif

@@ -43,6 +43,8 @@
 		8AA22ED129CF748F004FC764 /* Atomics in Frameworks */ = {isa = PBXBuildFile; productRef = 8AA22ED029CF748F004FC764 /* Atomics */; };
 		8AA22ED329CFD067004FC764 /* TVMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA22ED229CFD067004FC764 /* TVMenu.swift */; };
 		8AA22ED429CFD067004FC764 /* TVMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA22ED229CFD067004FC764 /* TVMenu.swift */; };
+		8AA22ED629D05BAA004FC764 /* UserConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA22ED529D05BAA004FC764 /* UserConfig.swift */; };
+		8AA22ED729D05BAA004FC764 /* UserConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA22ED529D05BAA004FC764 /* UserConfig.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,6 +83,7 @@
 		8A0DF6A627782E4100C09201 /* MPVShaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPVShaderTests.swift; sourceTree = "<group>"; };
 		8AA22ECB29CF6A96004FC764 /* CenterResize.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = CenterResize.metal; sourceTree = "<group>"; };
 		8AA22ED229CFD067004FC764 /* TVMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVMenu.swift; sourceTree = "<group>"; };
+		8AA22ED529D05BAA004FC764 /* UserConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserConfig.swift; sourceTree = "<group>"; };
 		8AECBC1727790AA200922C26 /* Anime4KMetal (iOS).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Anime4KMetal (iOS).entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -137,14 +140,11 @@
 			isa = PBXGroup;
 			children = (
 				8A07C91027783E530023EC36 /* glsl */,
+				8AA22ED829D05C3A004FC764 /* UI */,
 				8A0DF66027782DD700C09201 /* Anime4KMetalApp.swift */,
-				8A0DF66127782DD700C09201 /* ContentView.swift */,
 				8A0DF66227782DD700C09201 /* Assets.xcassets */,
 				8A0DF6A127782E0400C09201 /* MPVShader.swift */,
 				8A07C95727784C680023EC36 /* Anime4K.swift */,
-				8A07C95127784B9F0023EC36 /* PlayerController.swift */,
-				8AA22ED229CFD067004FC764 /* TVMenu.swift */,
-				8A07C9652778B2570023EC36 /* PlayerView.swift */,
 				8A07C95E2778544C0023EC36 /* Average.swift */,
 				8AA22ECB29CF6A96004FC764 /* CenterResize.metal */,
 			);
@@ -175,6 +175,18 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		8AA22ED829D05C3A004FC764 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				8AA22ED529D05BAA004FC764 /* UserConfig.swift */,
+				8A0DF66127782DD700C09201 /* ContentView.swift */,
+				8A07C95127784B9F0023EC36 /* PlayerController.swift */,
+				8A07C9652778B2570023EC36 /* PlayerView.swift */,
+				8AA22ED229CFD067004FC764 /* TVMenu.swift */,
+			);
+			path = UI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -354,6 +366,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8AA22ED729D05BAA004FC764 /* UserConfig.swift in Sources */,
 				8A07C95C277854320023EC36 /* Anime4K.swift in Sources */,
 				8A07C94727783FD60023EC36 /* Anime4KMetalApp.swift in Sources */,
 				8A07C9672778B2570023EC36 /* PlayerView.swift in Sources */,
@@ -381,6 +394,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8AA22ED629D05BAA004FC764 /* UserConfig.swift in Sources */,
 				8A07C95827784C680023EC36 /* Anime4K.swift in Sources */,
 				8A0DF68A27782DD700C09201 /* ContentView.swift in Sources */,
 				8A07C9662778B2570023EC36 /* PlayerView.swift in Sources */,

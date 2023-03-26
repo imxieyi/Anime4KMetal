@@ -17,6 +17,7 @@ import Foundation
 import SwiftUI
 
 struct PlayerView: UIViewControllerRepresentable {
+    @EnvironmentObject var config: UserConfig
     
     let shaders: [String]
     let videoUrl: URL
@@ -26,12 +27,14 @@ struct PlayerView: UIViewControllerRepresentable {
         controller.device = MTLCreateSystemDefaultDevice()!
         controller.videoUrl = videoUrl
         controller.shaders = shaders
+        controller.showPerfOverlay = config.showPerfOverlay
         return controller
     }
     
     func updateUIViewController(_ uiViewController: PlayerController, context: Context) {
         uiViewController.videoUrl = videoUrl
         uiViewController.shaders = shaders
+        uiViewController.showPerfOverlay = config.showPerfOverlay
     }
     
 }

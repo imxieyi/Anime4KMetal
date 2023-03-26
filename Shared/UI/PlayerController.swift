@@ -49,6 +49,12 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
         }
     }
     
+    var showPerfOverlay: Bool = true {
+        didSet {
+            perfBanner?.isHidden = !showPerfOverlay
+        }
+    }
+    
     var shaders: [String] = [] {
         didSet {
             anime4Ks.removeAll()
@@ -105,6 +111,7 @@ class PlayerController: AVPlayerViewController, MTKViewDelegate {
         perfBanner = UILabel()
         perfBanner.translatesAutoresizingMaskIntoConstraints = false
         view.insertSubview(perfBanner, at: 1)
+        perfBanner.isHidden = !showPerfOverlay
         perfBanner.backgroundColor = .black
         perfBanner.textColor = .white
         perfBanner.alpha = 0.5
