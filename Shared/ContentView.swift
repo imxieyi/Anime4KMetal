@@ -32,11 +32,18 @@ struct ContentView: View {
             form
         }
         #else
-        form
-        .fileImporter(isPresented: $showFileImporter, allowedContentTypes: [.movie]) { result in
-            localFileUrl = try! result.get()
-            playerViewItem = .local
+        NavigationView {
+            form
+                .navigationTitle("Anime4K")
+                .navigationBarTitleDisplayMode(.inline)
+                .fileImporter(isPresented: $showFileImporter, allowedContentTypes: [.movie]) { result in
+                    localFileUrl = try! result.get()
+                    playerViewItem = .local
+                }
         }
+        .navigationViewStyle(.stack)
+        .statusBarHidden()
+        .modifier(HideOverlayModifier())
         #endif
     }
     
@@ -139,6 +146,8 @@ struct ContentView: View {
                     .ignoresSafeArea()
                 #else
                 PlayerView(shaders: selected, videoUrl: URL(string: videoUrl)!)
+                    .statusBarHidden()
+                    .modifier(HideOverlayModifier())
                 #endif
             } else if item == .local {
                 #if os(tvOS)
@@ -146,6 +155,8 @@ struct ContentView: View {
                     .ignoresSafeArea()
                 #else
                 PlayerView(shaders: selected, videoUrl: localFileUrl)
+                    .statusBarHidden()
+                    .modifier(HideOverlayModifier())
                 #endif
             }
         }
@@ -249,6 +260,16 @@ struct ContentView: View {
             "Upscale/Anime4K_Upscale_CNN_x2_M.glsl",
         ]),
     ]
+}
+
+struct HideOverlayModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 16.0, *) {
+            content.persistentSystemOverlays(.hidden)
+        } else {
+            content
+        }
+    }
 }
 
 enum PlayerViewItem: String, Identifiable {
