@@ -19,7 +19,8 @@ import Combine
 struct ContentView: View {
     
     @State var shaders: [String] = []
-    @State var selected: [String] = []
+    @State var selected: [String] = [
+    ]
     @State var videoUrl: String = ""
     @State var localFileUrl: URL = URL(fileURLWithPath: "file:///")
     @State var playerViewItem: PlayerViewItem? = nil
@@ -65,6 +66,19 @@ struct ContentView: View {
                                 selected.append(shaders[i])
                             } label: {
                                 Text(shaders[i])
+                            }
+                        }
+                    }
+                }
+                HStack {
+                    Text("Use preset")
+                    Spacer()
+                    Menu("Use preset") {
+                        ForEach(0..<presets.count, id: \.self) { i in
+                            Button {
+                                selected = presets[i].1
+                            } label: {
+                                Text(presets[i].0)
                             }
                         }
                     }
@@ -123,6 +137,105 @@ struct ContentView: View {
             }
         }
     }
+    
+    let presets: [(String, [String])] = [
+        ("Anime4K: Mode A (Fast)", [
+            "Restore/Anime4K_Clamp_Highlights.glsl",
+            "Restore/Anime4K_Restore_CNN_M.glsl",
+            "Upscale/Anime4K_Upscale_CNN_x2_M.glsl",
+            "Upscale/Anime4K_AutoDownscalePre_x2.glsl",
+            "Upscale/Anime4K_AutoDownscalePre_x4.glsl",
+            "Upscale/Anime4K_Upscale_CNN_x2_S.glsl",
+        ]),
+        ("Anime4K: Mode B (Fast)", [
+            "Restore/Anime4K_Clamp_Highlights.glsl",
+            "Restore/Anime4K_Restore_CNN_Soft_M.glsl",
+            "Upscale/Anime4K_Upscale_CNN_x2_M.glsl",
+            "Upscale/Anime4K_AutoDownscalePre_x2.glsl",
+            "Upscale/Anime4K_AutoDownscalePre_x4.glsl",
+            "Upscale/Anime4K_Upscale_CNN_x2_S.glsl",
+        ]),
+         ("Anime4K: Mode C (Fast)", [
+            "Upscale+Denoise/Anime4K_Upscale_Denoise_CNN_x2_M.glsl",
+            "Upscale/Anime4K_AutoDownscalePre_x2.glsl",
+            "Upscale/Anime4K_AutoDownscalePre_x4.glsl",
+            "Upscale/Anime4K_Upscale_CNN_x2_S.glsl",
+        ]),
+        ("Anime4K: Mode A+A (Fast)", [
+            "Restore/Anime4K_Clamp_Highlights.glsl",
+            "Restore/Anime4K_Restore_CNN_M.glsl",
+            "Upscale/Anime4K_Upscale_CNN_x2_M.glsl",
+            "Restore/Anime4K_Restore_CNN_S.glsl",
+            "Upscale/Anime4K_AutoDownscalePre_x2.glsl",
+            "Upscale/Anime4K_AutoDownscalePre_x4.glsl",
+            "Upscale/Anime4K_Upscale_CNN_x2_S.glsl",
+        ]),
+        ("Anime4K: Mode B+B (Fast)", [
+            "Restore/Anime4K_Clamp_Highlights.glsl",
+            "Restore/Anime4K_Restore_CNN_Soft_M.glsl",
+            "Upscale/Anime4K_Upscale_CNN_x2_M.glsl",
+            "Upscale/Anime4K_AutoDownscalePre_x2.glsl",
+            "Upscale/Anime4K_AutoDownscalePre_x4.glsl",
+            "Restore/Anime4K_Restore_CNN_Soft_S.glsl",
+            "Upscale/Anime4K_Upscale_CNN_x2_S.glsl",
+        ]),
+        ("Anime4K: Mode C+A (Fast)", [
+            "Restore/Anime4K_Clamp_Highlights.glsl",
+            "Upscale+Denoise/Anime4K_Upscale_Denoise_CNN_x2_M.glsl",
+            "Upscale/Anime4K_AutoDownscalePre_x2.glsl",
+            "Upscale/Anime4K_AutoDownscalePre_x4.glsl",
+            "Restore/Anime4K_Restore_CNN_S.glsl",
+            "Upscale/Anime4K_Upscale_CNN_x2_S.glsl",
+        ]),
+        ("Anime4K: Mode A (HQ)", [
+            "Restore/Anime4K_Clamp_Highlights.glsl",
+            "Restore/Anime4K_Restore_CNN_VL.glsl",
+            "Upscale/Anime4K_Upscale_CNN_x2_VL.glsl",
+            "Upscale/Anime4K_AutoDownscalePre_x2.glsl",
+            "Upscale/Anime4K_AutoDownscalePre_x4.glsl",
+            "Upscale/Anime4K_Upscale_CNN_x2_M.glsl",
+        ]),
+        ("Anime4K: Mode B (HQ)", [
+            "Restore/Anime4K_Clamp_Highlights.glsl",
+            "Restore/Anime4K_Restore_CNN_Soft_VL.glsl",
+            "Upscale/Anime4K_Upscale_CNN_x2_VL.glsl",
+            "Upscale/Anime4K_AutoDownscalePre_x2.glsl",
+            "Upscale/Anime4K_AutoDownscalePre_x4.glsl",
+            "Upscale/Anime4K_Upscale_CNN_x2_M.glsl",
+        ]),
+        ("Anime4K: Mode C (HQ)", [
+            "Restore/Anime4K_Clamp_Highlights.glsl",
+            "Upscale+Denoise/Anime4K_Upscale_Denoise_CNN_x2_VL.glsl",
+            "Upscale/Anime4K_AutoDownscalePre_x2.glsl",
+            "Upscale/Anime4K_AutoDownscalePre_x4.glsl",
+            "Upscale/Anime4K_Upscale_CNN_x2_M.glsl",
+        ]),
+        ("Anime4K: Mode A+A (HQ)", [
+            "Restore/Anime4K_Clamp_Highlights.glsl",
+            "Restore/Anime4K_Restore_CNN_VL.glsl",
+            "Upscale/Anime4K_Upscale_CNN_x2_VL.glsl",
+            "Restore/Anime4K_Restore_CNN_M.glsl",
+            "Upscale/Anime4K_AutoDownscalePre_x2.glsl",
+            "Upscale/Anime4K_AutoDownscalePre_x4.glsl",
+            "Upscale/Anime4K_Upscale_CNN_x2_M.glsl",
+        ]),
+        ("Anime4K: Mode B+B (HQ)", [
+            "Restore/Anime4K_Clamp_Highlights.glsl",
+            "Restore/Anime4K_Restore_CNN_Soft_VL.glsl",
+            "Upscale/Anime4K_Upscale_CNN_x2_VL.glsl",
+            "Upscale/Anime4K_AutoDownscalePre_x2.glsl",
+            "Upscale/Anime4K_AutoDownscalePre_x4.glsl",
+            "Upscale/Anime4K_Upscale_CNN_x2_M.glsl",
+        ]),
+        ("Anime4K: Mode C+A (HQ)", [
+            "Restore/Anime4K_Clamp_Highlights.glsl",
+            "Upscale+Denoise/Anime4K_Upscale_Denoise_CNN_x2_VL.glsl",
+            "Upscale/Anime4K_AutoDownscalePre_x2.glsl",
+            "Upscale/Anime4K_AutoDownscalePre_x4.glsl",
+            "Restore/Anime4K_Restore_CNN_M.glsl",
+            "Upscale/Anime4K_Upscale_CNN_x2_M.glsl",
+        ]),
+    ]
 }
 
 enum PlayerViewItem: String, Identifiable {
