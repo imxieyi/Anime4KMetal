@@ -45,6 +45,8 @@
 		8AA22ED429CFD067004FC764 /* TVMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA22ED229CFD067004FC764 /* TVMenu.swift */; };
 		8AA22ED629D05BAA004FC764 /* UserConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA22ED529D05BAA004FC764 /* UserConfig.swift */; };
 		8AA22ED729D05BAA004FC764 /* UserConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA22ED529D05BAA004FC764 /* UserConfig.swift */; };
+		8AF01DD929D4BDF5009A4283 /* AutoStoredWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF01DD829D4BDF5009A4283 /* AutoStoredWrapper.swift */; };
+		8AF01DDA29D4BDF5009A4283 /* AutoStoredWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF01DD829D4BDF5009A4283 /* AutoStoredWrapper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,6 +87,7 @@
 		8AA22ED229CFD067004FC764 /* TVMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVMenu.swift; sourceTree = "<group>"; };
 		8AA22ED529D05BAA004FC764 /* UserConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserConfig.swift; sourceTree = "<group>"; };
 		8AECBC1727790AA200922C26 /* Anime4KMetal (iOS).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Anime4KMetal (iOS).entitlements"; sourceTree = "<group>"; };
+		8AF01DD829D4BDF5009A4283 /* AutoStoredWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoStoredWrapper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,6 +183,7 @@
 		8AA22ED829D05C3A004FC764 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				8AF01DD829D4BDF5009A4283 /* AutoStoredWrapper.swift */,
 				8AA22ED529D05BAA004FC764 /* UserConfig.swift */,
 				8A0DF66127782DD700C09201 /* ContentView.swift */,
 				8A07C95127784B9F0023EC36 /* PlayerController.swift */,
@@ -368,6 +372,7 @@
 			files = (
 				8AA22ED729D05BAA004FC764 /* UserConfig.swift in Sources */,
 				8A07C95C277854320023EC36 /* Anime4K.swift in Sources */,
+				8AF01DDA29D4BDF5009A4283 /* AutoStoredWrapper.swift in Sources */,
 				8A07C94727783FD60023EC36 /* Anime4KMetalApp.swift in Sources */,
 				8A07C9672778B2570023EC36 /* PlayerView.swift in Sources */,
 				8AA22ED429CFD067004FC764 /* TVMenu.swift in Sources */,
@@ -396,6 +401,7 @@
 			files = (
 				8AA22ED629D05BAA004FC764 /* UserConfig.swift in Sources */,
 				8A07C95827784C680023EC36 /* Anime4K.swift in Sources */,
+				8AF01DD929D4BDF5009A4283 /* AutoStoredWrapper.swift in Sources */,
 				8A0DF68A27782DD700C09201 /* ContentView.swift in Sources */,
 				8A07C9662778B2570023EC36 /* PlayerView.swift in Sources */,
 				8AA22ED329CFD067004FC764 /* TVMenu.swift in Sources */,

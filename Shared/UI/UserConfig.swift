@@ -28,37 +28,3 @@ class UserConfig: ObservableObject {
         }
     }
 }
-
-protocol PublishedWrapper: AnyObject {
-    var objectWillChange: ObservableObjectPublisher? { get set }
-    func reset()
-}
-
-@propertyWrapper
-class AutoStored<T> : PublishedWrapper {
-    weak var objectWillChange: ObservableObjectPublisher?
-    
-    private let key: String
-    private let defaultValue: T
-    private var value: T
-    var wrappedValue: T {
-        get { value }
-        set {
-            value = newValue
-            UserDefaults.standard.set(value, forKey: key)
-            objectWillChange?.send()
-        }
-    }
-    init(wrappedValue: T, _ key: String) {
-        self.key = key
-        self.defaultValue = wrappedValue
-        if let storedValue = UserDefaults.standard.object(forKey: key) as? T {
-            value = storedValue
-        } else {
-            value = wrappedValue
-        }
-    }
-    func reset() {
-        wrappedValue = defaultValue
-    }
-}
