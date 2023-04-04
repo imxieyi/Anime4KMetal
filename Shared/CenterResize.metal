@@ -16,7 +16,7 @@
 #include <metal_stdlib>
 using namespace metal;
 
-constexpr sampler linearSampler (coord::normalized, address::clamp_to_edge, filter::linear);
+constexpr sampler bicubicSampler (coord::normalized, address::clamp_to_edge, filter::bicubic);
 
 kernel void CenterResize(texture2d<float, access::sample> input [[texture(0)]],
                          texture2d<float, access::write> output [[texture(1)]],
@@ -35,5 +35,5 @@ kernel void CenterResize(texture2d<float, access::sample> input [[texture(0)]],
         output.write(float4(0), gid);
         return;
     }
-    output.write(input.sample(linearSampler, nPos), gid);
+    output.write(input.sample(bicubicSampler, nPos), gid);
 }
