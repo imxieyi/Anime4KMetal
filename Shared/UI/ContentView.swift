@@ -264,6 +264,7 @@ struct ContentView: View {
             "Upscale/Anime4K_Upscale_CNN_x2_VL.glsl",
             "Upscale/Anime4K_AutoDownscalePre_x2.glsl",
             "Upscale/Anime4K_AutoDownscalePre_x4.glsl",
+            "Restore/Anime4K_Restore_CNN_Soft_M.glsl",
             "Upscale/Anime4K_Upscale_CNN_x2_M.glsl",
         ]),
         ("Anime4K: Mode C+A (HQ)", [
