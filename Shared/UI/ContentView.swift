@@ -161,6 +161,7 @@ struct ContentView: View {
                     .ignoresSafeArea()
                 #else
                 PlayerView(shaders: config.selected, videoUrl: URL(string: videoUrl)!)
+                    .ignoresSafeArea(.container, edges: .vertical)
                     .statusBarHidden()
                     .modifier(HideOverlayModifier())
                 #endif
@@ -170,6 +171,7 @@ struct ContentView: View {
                     .ignoresSafeArea()
                 #else
                 PlayerView(shaders: config.selected, videoUrl: localFileUrl)
+                    .ignoresSafeArea(.container, edges: .vertical)
                     .statusBarHidden()
                     .modifier(HideOverlayModifier())
                 #endif
